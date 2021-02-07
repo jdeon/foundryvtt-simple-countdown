@@ -1,14 +1,22 @@
 
 let displayMain = null;
 
+const actions = {
+	INIT : 1,
+	PLAY : 2,
+	PAUSE : 3,
+	RESET : 4
+}
+
 export class CountDownForm extends FormApplication {
-    
+
     constructor(object = {}, options = null) {
         super(object, options);
         this._play = false;
         this._initCount = 0;
         this._actualCount = 0;
         this._timerId = null;
+        this._action = null;
     }
     
     static showForm() {
@@ -36,13 +44,20 @@ export class CountDownForm extends FormApplication {
         
         return seconds;
     }
+    
+    static reload () {
+        if(!game.user.isGM)
+            displayMain.load();
+
+    }
 
     activateListeners(html) {
         //super.activateListeners(html);
         
-        if (!game.user.isGM)
+        if (!game.user.isGM){
+            this.load();
             return;
-
+        }
         
         $(html)
             .find("#countdown_btn_start")
@@ -52,8 +67,12 @@ export class CountDownForm extends FormApplication {
                 if(this._timerId == null){
                     this.initCountDown();
                     this._timerId = setInterval(this.timerRunning, 1000);
+                    this._action = actions.INIT;
+                } else {
+                    this._action = actions.PLAY;
                 }
-  
+            
+                this.save();
                 //this.render(false);
             });
         
@@ -61,6 +80,8 @@ export class CountDownForm extends FormApplication {
             .find("#countdown_btn_pause")
             .click(event => {
                 this._play = false;
+                this._action = actions.PAUSE;
+                this.save();
                 //this.render(false);
             });
         
@@ -69,12 +90,14 @@ export class CountDownForm extends FormApplication {
             .click(event => {
                 this.resetCountDown();
                 this.updateInput();
+                this._action = actions.RESET;
+                this.save();
                 //this.render(false);
             });
     }
         
     get title() {
-        return "Test countdown";
+        return "Countdown";
     }
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -143,6 +166,40 @@ export class CountDownForm extends FormApplication {
         this._timerId = null;
     }
 
+    save(){
+        game.settings.set("dnd5e-countdown", "store", this);
+     }
+    
+    load(){
+        let saveData = game.settings.get("dnd5e-countdown", "store");
+        
+        if(!saveData){
+            return;
+        }
+        
+        
+        switch (saveData._action) {
+	       case actions.INIT:
+                this._play = true;
+                this._initCount = saveData._initCount;
+                this._actualCount = saveData._initCount;
+                this._timerId = setInterval(this.timerRunning, 1000);
+                break;
+            case actions.PLAY:
+                this._play = true;
+                break;
+            case actions.PAUSE:
+                this._play = false;
+                break;
+            case actions.RESET:
+                this.resetCountDown();
+                this.updateInput();
+                break;
+        }
+
+        displayMain = this;
+    }
+    
     /*
     static setupHooks() {
         Hooks.on("updateWorldTime", SimpleCalendarDisplay.updateClock);
@@ -152,4 +209,6 @@ export class CountDownForm extends FormApplication {
         Hooks.on("about-time.clockRunningStatus", SimpleCalendarDisplay.updateClock);
     }
     */
+    
+    //game.settings.set("core", "time", newTime);
 }
