@@ -1,0 +1,42 @@
+<div id="countdown_panel">
+    <!--<div>
+		<h3 id="countdown_panel_hdr" text-align="center">
+			{{now.date}}
+        </h3>
+    </div>-->
+    <div>
+       <table>
+            <tr>
+                <td> 
+                    <input id="countdown_h_value" type="number" size="2" min="0" max="24" style="width:50px;"
+                        {{#unless isGM}} disabled=true {{/unless}}
+                    />
+                </td>
+                
+                <td>:</td>
+       
+                <td>
+                    <input id="countdown_min_value" type="number" size="2" min="0" max="59" style="width:50px;"
+                        {{#unless isGM}} disabled=true {{/unless}}
+                    />
+                </td>
+                
+                <td>:</td>
+                
+                <td>
+                    <input id="countdown_sec_value" type="number" size="2" min="0" max="59" style="width:50px;"
+                        {{#unless isGM}} disabled=true {{/unless}}
+                    />
+                </td>
+       
+           </tr></table>
+           
+        {{#if isGM}}
+        <div>
+            <input id="countdown_btn_start" type="button" value="|>"/>
+            <input id="countdown_btn_pause" type="button" value="||"/>
+            <input id="countdown_btn_reset" type="button" value="|=|"/>
+        </div>
+        {{/if}}
+    </div>
+</div>

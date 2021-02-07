@@ -1,0 +1,11 @@
+{
+	"name": "dnd5e-Countdown",
+	"title": "Add countdown timer in foundry",
+	"description": "Module local pour imprimer les fiche de personnage",
+	"version": "0.1.0",
+	"minimumCoreVersion": "0.7.9",
+	"compatibleCoreVersion": "0.7.9",
+	"author": "Jideon",
+	"systems": ["dnd5e"],
+    "esmodules": ["/add_countown.js"]
+}
