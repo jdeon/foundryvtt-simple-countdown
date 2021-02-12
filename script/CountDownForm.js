@@ -10,7 +10,7 @@ const actions = {
 
 export class CountDownForm extends FormApplication {
 
-    constructor(object = {}, options = null) {
+    constructor(object = {}, options = {}) {
         super(object, options);
         this._play = false;
         this._initCount = 0;
@@ -21,10 +21,19 @@ export class CountDownForm extends FormApplication {
     
     static showForm() {
         if (!displayMain) {
-            displayMain = new CountDownForm();
+            //displayMain = new CountDownForm({},{classes : ['countdown-form']});
+            let idCss;
+            
+            if (game.user.isGM){
+                idCss = 'countdown-form-GM';
+            } else {
+                idCss = 'countdown-form'
+            }
+            
+            displayMain = new CountDownForm({},{id : idCss});
             //CountDownForm.setupHooks();
         }
-        displayMain.render(true);
+        displayMain.render(true, {});
     }
     
     static timeInObj(seconds) {
@@ -46,9 +55,10 @@ export class CountDownForm extends FormApplication {
     }
     
     static reload () {
-        if(!game.user.isGM)
+        if(!game.user.isGM){
+            CountDownForm.showForm();
             displayMain.load();
-
+        }
     }
 
     activateListeners(html) {

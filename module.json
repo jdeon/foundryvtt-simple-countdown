@@ -7,5 +7,6 @@
 	"compatibleCoreVersion": "0.7.9",
 	"author": "Jideon",
 	"systems": ["dnd5e"],
+    "styles": ["/countdown.css"],
     "esmodules": ["/add_countown.js"]
 }
