@@ -1,6 +1,6 @@
 {
 	"name": "dnd5e-Countdown",
-	"title": "Add countdown timer in foundry",
+	"title": "Countdown timer overlay",
 	"description": "Module local pour imprimer les fiche de personnage",
 	"version": "0.1.0",
 	"minimumCoreVersion": "0.7.9",

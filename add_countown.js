@@ -25,24 +25,6 @@ Hooks.once('setup', function () {
 /* When ready							*/
 /* ------------------------------------ */
 Hooks.once('ready', function () {
-    console.log('add_countdown | ready to add_countdown');
-    
-    CountDownForm.showForm();
-    
-    // emergency clearing of the queue ElapsedTime._flushQueue();
-    /*DTCalc.loadUserCalendar();
-    DTCalc.createFromData();
-    PseudoClock.init();
-    ElapsedTime.init();
-    if (ElapsedTime.debug) {
-        runDateTimeTests();
-    }
-    
-    new CalendarEditor(
-        calendars[Object.keys(calendars)[game.settings.get("about-time", "calendar")]],
-        {editable: true, closeOnSubmit: true, submitOnClose: false, submitOnUnfocus: false}
-    ).render(false);
-    */
-    //@ts-ignore
-    //window.CalendarEditor = CalendarEditor;
+    console.log('add_countdown | ready to add_countdown'); 
+    //CountDownForm.showForm();
 });

@@ -55,7 +55,7 @@ export class CountDownForm extends FormApplication {
     }
     
     static reload () {
-        if(!game.user.isGM){
+        if(!game.user.isGM || null == displayMain){
             CountDownForm.showForm();
             displayMain.load();
         }
@@ -135,6 +135,9 @@ export class CountDownForm extends FormApplication {
     }
     
     close() {
+        if(null !== displayMain && null !== displayMain._timerId){
+            clearTimeout(displayMain._timerId);
+        }
         displayMain = null;
         return super.close();
     }
@@ -187,12 +190,23 @@ export class CountDownForm extends FormApplication {
             return;
         }
         
+        if(null !== this._timerId){
+            clearTimeout(this._timerId);
+            this._timerId = null;
+        }
+        
+        this._initCount = saveData._initCount;
+        this._actualCount = saveData._actualCount;
+        this._timerId = setInterval(this.timerRunning, 1000);
+        
+        
         
         switch (saveData._action) {
 	       case actions.INIT:
                 this._play = true;
-                this._initCount = saveData._initCount;
-                this._actualCount = saveData._initCount;
+                if(null !== this._timerId){
+                    clearTimeout(this._timerId);
+                }
                 this._timerId = setInterval(this.timerRunning, 1000);
                 break;
             case actions.PLAY:
