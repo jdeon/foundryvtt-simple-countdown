@@ -13,8 +13,13 @@
 		  "flags": {}
 		}
 	  ],
-    "styles": ["/countdown.css"],
-    "esmodules": ["/add_countown.js"],
+	"esmodules": [
+		"./add_countown.js"
+	],
+    "styles": [
+		"./countdown.css"
+	],
+	"socket": true,
 	"url": "https://github.com/jdeon/dnd5e-Countdown",
 	"manifest": "https://github.com/jdeon/dnd5e-Countdown/releases/latest/download/module.json",
 	"download": "https://github.com/jdeon/dnd5e-Countdown/archive/refs/tags/VERSION_PATHHOLDER.zip"
