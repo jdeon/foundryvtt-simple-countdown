@@ -18,6 +18,22 @@ export class CountDownForm extends FormApplication {
         this._timerId = null;
         this._action = null;
     }
+
+    static actions = {
+        INIT : "INIT",
+        PLAY : "PLAY",
+        PAUSE : "PAUSE",
+        RESET : "RESET"
+    }
+
+    static get defaultOptions() {
+        const options = super.defaultOptions;
+        options.title = "Countdown";
+        options.template = "modules/simple-countdown/template/countdown_panel.html";
+        options.height = "auto"
+        options.resizable = false;
+        return options;
+    }
     
     static showForm() {
         if (!displayMain) {
