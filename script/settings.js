@@ -1,18 +1,14 @@
-import { CountDownForm } from "./CountDownForm.js";
+import { Utils } from "./utils.js";
 
 export const registerSettings = function () {
-    // Register any custom module settings here
-    const modulename = "simple-countdown";   
-
-    /*
-    game.settings.register(modulename, "store", {
-        name: "Save Action Countdown",
-        hint: "Don't touch this",
-        default: {},
-        type: Object,
+    
+    game.settings.register(Utils.MODULE_NAME, "sync-deltatime", {
+        name: "Synchronisation deltatime",
+        hint: "Interval in seconds where the remaining time is synchronize with the clients",
+        default: 10,
+        type: Number,
         scope: 'world',
-        config: false,
-        onChange: CountDownForm.reload
+        config: true,
     });
-    */
+    
 };

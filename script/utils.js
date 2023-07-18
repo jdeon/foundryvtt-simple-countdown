@@ -1,6 +1,8 @@
 export class Utils {
 
-    static s_EVENT_NAME = 'module.simple-countdown';
+    static MODULE_NAME = 'simple-countdown';
+
+    static s_EVENT_NAME = `module.${Utils.MODULE_NAME}`;
 
     static timeInObj(seconds) {
         let timeObject = {

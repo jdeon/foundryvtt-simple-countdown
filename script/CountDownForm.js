@@ -2,8 +2,6 @@ import { Utils } from "./utils.js"
 
 let displayMain = null;
 
-export const s_EVENT_NAME = 'module.simple-countdown';
-
 export class CountDownForm extends FormApplication {
 
     constructor(object = {}, options = {}) {
@@ -13,6 +11,7 @@ export class CountDownForm extends FormApplication {
         this._actualCount = 0;
         this._timerId = null;
         this._action = null;
+        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
     }
 
     static actions = {
@@ -141,6 +140,14 @@ export class CountDownForm extends FormApplication {
             }
             
             displayMain.updateInput();
+
+            if(game.user.isGM){
+                displayMain._nextSync -= .1;
+                if(displayMain._nextSync < 0){
+                    displayMain.save(false)
+                    displayMain._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
+                }
+            }
         }
     }
     
