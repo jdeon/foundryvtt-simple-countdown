@@ -24,11 +24,10 @@ export class CountDownForm extends FormApplication {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        options.template = "modules/simple-countdown/template/countdown_panel.html";
-        // options.width = 520;
-        // options.height = 520; // should be "auto", but foundry has problems with dynamic content
-        options.resizable = false;
         options.title = "Countdown";
+        options.template = "modules/simple-countdown/template/countdown_panel.html";
+        options.height = "auto"
+        options.resizable = false;
         return options;
     }
     

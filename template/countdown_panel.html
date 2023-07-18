@@ -1,17 +1,24 @@
-<!--
-    <header class="window-header flexrow draggable resizable" style="
-    /* color: rgba(255,255,255,0.87); */
-    background-color: rgb(68,68,68);
-    height: 20px;
-    font-size: 12px;
-">
-        <h4 class="window-title">Countdown</h4>
-        <a class="header-button close"><i class="fas fa-times"></i>Fermer</a>
-    </header>
--->
 <div id="countdown_panel">
     <div>
        <table style="margin: 0px; width: 100px;">
+            <tr>
+                <th> 
+                    <label for="countdown_h_value">H</label>
+                </th>
+                
+                <th/>
+    
+                <th>
+                    <label for="countdown_min_value">min</label>
+                </th>
+                
+                <th/>
+                
+                <th>
+                    <label for="countdown_sec_value">sec</label>
+                </th>
+            </tr>
+
             <tr>
                 <td> 
                     <input id="countdown_h_value" type="number" size="2" min="0" max="24" style="width:25px;"
@@ -38,10 +45,10 @@
            </tr></table>
            
         {{#if isGM}}
-        <div id='countdown_controle'>
-            <i id='countdown_btn_start' class="fas fa-play"></i>
-            <i id='countdown_btn_pause' class="fas fa-pause"></i>
-            <i id='countdown_btn_reset' class="fas fa-stop"></i>
+        <div id='countdown_controle' style="padding-top: 15px; padding-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr;">
+            <i id='countdown_btn_start' class="fas fa-play fa-xl"></i>
+            <i id='countdown_btn_pause' class="fas fa-pause fa-xl"></i>
+            <i id='countdown_btn_reset' class="fas fa-stop fa-xl"></i>
         </div>
         {{/if}}
     </div>
