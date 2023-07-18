@@ -1,5 +1,7 @@
 export class Utils {
 
+    static s_EVENT_NAME = 'module.simple-countdown';
+
     static timeInObj(seconds) {
         let timeObject = {
              h : Math.floor(seconds / (60*60)),

@@ -1,12 +1,6 @@
 import { CountDownForm } from "./script/CountDownForm.js";
 import { registerSettings } from "./script/settings.js";
-
-/**
- * Defines the event name to send all messages to over  `game.socket`.
- *
- * @type {string}
- */
-export const s_EVENT_NAME = 'module.simple-countdown';
+import { Utils } from "./script/utils.js";
 
 
 /* ------------------------------------ */
@@ -42,11 +36,11 @@ Hooks.once('ready', function () {
   */
   function listen()
   {
-     game.socket.on(s_EVENT_NAME, (data) =>
+     game.socket.on(Utils.s_EVENT_NAME, (data) =>
      {
         if (typeof data !== 'object') { return; }
   
-        if(! game.user.isGM){ return; }
+        if(game.user.isGM){ return; }
   
         try
         {

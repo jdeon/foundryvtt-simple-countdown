@@ -2,6 +2,8 @@ import { Utils } from "./utils.js"
 
 let displayMain = null;
 
+export const s_EVENT_NAME = 'module.simple-countdown';
+
 export class CountDownForm extends FormApplication {
 
     constructor(object = {}, options = {}) {
@@ -14,10 +16,10 @@ export class CountDownForm extends FormApplication {
     }
 
     static actions = {
-        INIT : 1,
-        PLAY : 2,
-        PAUSE : 3,
-        RESET : 4
+        INIT : "INIT",
+        PLAY : "PLAY",
+        PAUSE : "PAUSE",
+        RESET : "RESET"
     }
 
     static get defaultOptions() {
@@ -25,7 +27,7 @@ export class CountDownForm extends FormApplication {
         options.template = "modules/simple-countdown/template/countdown_panel.html";
         // options.width = 520;
         // options.height = 520; // should be "auto", but foundry has problems with dynamic content
-        options.resizable = true;
+        options.resizable = false;
         options.title = "Countdown";
         return options;
     }
@@ -62,7 +64,7 @@ export class CountDownForm extends FormApplication {
             
                 if(this._timerId == null){
                     this.initCountDown();
-                    this._timerId = setInterval(this.timerRunning, 1000);
+                    this._timerId = setInterval(this.timerRunning, 100);
                     this._action = CountDownForm.actions.INIT;
                 } else {
                     this._action = CountDownForm.actions.PLAY;
@@ -116,9 +118,9 @@ export class CountDownForm extends FormApplication {
     updateForm(action, payload){
         this._action = action;
 
-        this._play = action === actions.INIT  || action === actions.PLAY;
+        this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
         this._initCount = payload.initCount;
-        this._actualCount = payload._actualCount;
+        this._actualCount = payload.remaningCount;
     }
 
     initPlay(action, payload){
@@ -126,14 +128,14 @@ export class CountDownForm extends FormApplication {
         if(null !== this._timerId){
             clearTimeout(this._timerId);
         }
-        this._timerId = setInterval(this.timerRunning, 1000);
+        this._timerId = setInterval(this.timerRunning, 100);
         
         this.updateForm(action, payload)
     }
     
     timerRunning(){
         if(displayMain._play && !game.paused){
-            displayMain._actualCount -=1;
+            displayMain._actualCount -= .1;
             
             if(displayMain._actualCount < 0){
                 displayMain.resetCountDown();
@@ -144,7 +146,8 @@ export class CountDownForm extends FormApplication {
     }
     
     updateInput(){
-        const objTimer = Utils.timeInObj(this._actualCount);
+        let seconds = parseInt(this._actualCount)
+        const objTimer = Utils.timeInObj(seconds);
         document.getElementById("countdown_h_value").value = objTimer.h;
         document.getElementById("countdown_min_value").value = objTimer.min;
         document.getElementById("countdown_sec_value").value = objTimer.sec;
@@ -176,7 +179,7 @@ export class CountDownForm extends FormApplication {
                 toShow : toShow
             }
 
-            game.socket.emit(s_EVENT_NAME, {
+            game.socket.emit(Utils.s_EVENT_NAME, {
                 type: this._action,
                 payload: data
             });
