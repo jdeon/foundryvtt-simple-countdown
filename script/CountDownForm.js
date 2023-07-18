@@ -69,7 +69,7 @@ export class CountDownForm extends FormApplication {
                     this._action = CountDownForm.actions.PLAY;
                 }
             
-                this.save();
+                this.save(true);
             });
         
         $(html)
@@ -77,7 +77,7 @@ export class CountDownForm extends FormApplication {
             .click(event => {
                 this._play = false;
                 this._action = CountDownForm.actions.PAUSE;
-                this.save();
+                this.save(true);
             });
         
         $(html)
@@ -86,7 +86,7 @@ export class CountDownForm extends FormApplication {
                 this.resetCountDown();
                 this.updateInput();
                 this._action = CountDownForm.actions.RESET;
-                this.save();
+                this.save(true);
             });
     }
         

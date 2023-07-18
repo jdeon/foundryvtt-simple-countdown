@@ -7,10 +7,21 @@ import { Utils } from "./script/utils.js";
 /* Initialize module					*/
 /* ------------------------------------ */
 Hooks.once('init', async function () {
-    console.log('add_countdown | Initializing add_countdown');
+    console.log('add_countdown | Initializing simple-countdown');
     // Assign custom classes and constants here
     // Register custom module settings
     registerSettings();
+
+    Hooks.on("getSceneControlButtons", (controls) => {
+      controls[0].tools.push({
+      name: 'simple-countdown',
+      title: 'Countdown',
+      icon: 'far fa-hourglass',
+      button: true,
+      onClick: () => CountDownForm.showForm(),
+      visible: game.user.isGM
+      })
+  });
     
     return loadTemplates(['modules/simple-countdown/template/countdown_panel.html']);
     
@@ -26,8 +37,7 @@ Hooks.once('setup', function () {
 /* When ready							*/
 /* ------------------------------------ */
 Hooks.once('ready', function () {
-    console.log('add_countdown | ready to add_countdown'); 
-    CountDownForm.showForm(); //TODO add button
+    console.log('add_countdown | ready to simple-countdown'); 
     listen()
 });
   
@@ -51,6 +61,8 @@ Hooks.once('ready', function () {
              } else {
                 formDisplay = CountDownForm.getForm()
              }
+
+             if(formDisplay === undefined) {return ;}
 
            // Dispatch the incoming message data by the message type.
            switch (data.type)
