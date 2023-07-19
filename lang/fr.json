@@ -1,0 +1,8 @@
+{
+  "SIMPLE-COUNTDOWN.Overlay.Title": "Countdown",
+  "SIMPLE-COUNTDOWN.Overlay.secAbbr": "sec",
+  "SIMPLE-COUNTDOWN.Overlay.minAbbr": "min",
+  "SIMPLE-COUNTDOWN.Overlay.hourAbbr": "h",
+  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.name": "Interval de synchronisation",
+  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Fréquence en secondes pour resynchroniser le temps restant avec les clients"
+}

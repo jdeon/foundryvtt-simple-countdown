@@ -24,7 +24,7 @@ export class CountDownForm extends FormApplication {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        options.title = "Countdown";
+        options.title = game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title"),
         options.template = "modules/simple-countdown/template/countdown_panel.html";
         options.height = "auto"
         options.resizable = false;
@@ -91,7 +91,7 @@ export class CountDownForm extends FormApplication {
     }
         
     get title() {
-        return "Countdown";
+        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
     }
 
     /**
