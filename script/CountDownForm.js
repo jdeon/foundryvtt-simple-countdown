@@ -7,11 +7,12 @@ export class CountDownForm extends FormApplication {
     constructor(object = {}, options = {}) {
         super(object, options);
         this._play = false;
-        this._initCount = 0;
-        this._actualCount = 0;
+        this._initCount = 0;        //in ms
+        this._actualCount = 0;      //in ms
         this._timerId = null;
         this._action = null;
-        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
+        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+        this._lastUpdate = Date.now()
     }
 
     static actions = {
@@ -132,8 +133,11 @@ export class CountDownForm extends FormApplication {
     }
     
     timerRunning(){
+        const now = Date.now()
+        const deltatime = now - displayMain._lastUpdate;
+
         if(displayMain._play && !game.paused){
-            displayMain._actualCount -= .1;
+            displayMain._actualCount -= deltatime;
             
             if(displayMain._actualCount < 0){
                 displayMain.resetCountDown();
@@ -142,13 +146,15 @@ export class CountDownForm extends FormApplication {
             displayMain.updateInput();
 
             if(game.user.isGM){
-                displayMain._nextSync -= .1;
+                displayMain._nextSync -= deltatime;
                 if(displayMain._nextSync < 0){
                     displayMain.save(false)
-                    displayMain._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
+                    displayMain._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
                 }
             }
         }
+
+        displayMain._lastUpdate = now
     }
     
     updateInput(){
@@ -165,9 +171,10 @@ export class CountDownForm extends FormApplication {
         objTimer.min = document.getElementById("countdown_min_value").value;
         objTimer.sec = document.getElementById("countdown_sec_value").value;
         
-        let seconds = Utils.timeInSec(objTimer);
-        this._initCount = seconds;
-        this._actualCount = seconds;  
+        const millis = Utils.timeInMillis(objTimer);
+        this._initCount = millis;
+        this._actualCount = millis;
+        this._lastUpdate = Date.now()  
     }
     
     resetCountDown(){
