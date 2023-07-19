@@ -2,7 +2,7 @@
 	"id": "simple-countdown",
 	"title": "Simple countdown timer overlay",
 	"description": "Module allowing to show a countdown to client in an overlay",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"compatibility": {
 		"minimum": "9",
 		"verified": "11.302"
@@ -13,8 +13,13 @@
 		  "flags": {}
 		}
 	  ],
-    "styles": ["/countdown.css"],
-    "esmodules": ["/add_countown.js"],
+	"esmodules": [
+		"./add_countown.js"
+	],
+    "styles": [
+		"./countdown.css"
+	],
+	"socket": true,
 	"url": "https://github.com/jdeon/dnd5e-Countdown",
 	"manifest": "https://github.com/jdeon/dnd5e-Countdown/releases/latest/download/module.json",
 	"download": "https://github.com/jdeon/dnd5e-Countdown/archive/refs/tags/VERSION_PATHHOLDER.zip"
