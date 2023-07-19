@@ -2,7 +2,7 @@
 	"id": "simple-countdown",
 	"title": "Simple countdown timer overlay",
 	"description": "Module allowing to show a countdown to client in an overlay",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"compatibility": {
 		"minimum": "9",
 		"verified": "11.302"
