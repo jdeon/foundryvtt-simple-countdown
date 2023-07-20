@@ -97,6 +97,11 @@ export class CountDownForm extends FormApplication {
 
             this.save(true);
         });
+
+        this._inputs.syncButton.click(event => {
+            this.save(false);
+            this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+        });
     }
         
     get title() {
@@ -126,6 +131,7 @@ export class CountDownForm extends FormApplication {
         this._inputs.playButton = $(html).find("#countdown_btn_start")
         this._inputs.pauseButton = $(html).find("#countdown_btn_pause")
         this._inputs.resetButton = $(html).find("#countdown_btn_reset")
+        this._inputs.syncButton = $(html).find("#countdown_btn_sync")
 
         this._inputs.hoursField = $(html).find("#countdown_h_value")
         this._inputs.minutesField = $(html).find("#countdown_min_value")

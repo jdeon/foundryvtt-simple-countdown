@@ -72,7 +72,8 @@ Hooks.once('ready', function () {
                 break;
               case CountDownForm.actions.PLAY:
               case CountDownForm.actions.PAUSE: 
-                formDisplay.updateForm(data.type, data.payload); 
+                formDisplay.updateForm(data.type, data.payload);
+                formDisplay.updateInput();
                 break;
               case CountDownForm.actions.RESET: 
                 formDisplay.updateForm(data.type, data.payload); 
