@@ -43,9 +43,9 @@ export class CountDownForm extends FormApplication {
             }
             
             displayMain = new CountDownForm({},{id : idCss});
-        }
 
-        displayMain.render(true, {});
+            displayMain.render(true, {});
+        }
 
         return displayMain;
     }
@@ -102,6 +102,14 @@ export class CountDownForm extends FormApplication {
             this.save(false);
             this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         });
+
+        this._inputs.hoursField.change(event => {
+            console.log(event)
+        });
+
+        this._inputs.secondsField.change(event => {
+            console.log(event)
+        });
     }
         
     get title() {
@@ -147,12 +155,16 @@ export class CountDownForm extends FormApplication {
         this._actualCount = payload.remaningCount;
     }
 
-    initPlay(action, payload){
+    play(action, payload, isInit){
         this._play = true;
-        if(null !== this._timerId){
+        if(isInit && null !== this._timerId){
             clearTimeout(this._timerId);
+            this._timerId = null;
         }
-        this._timerId = setInterval(this.timerRunning, 100);
+
+        if(this._timerId == null){
+            this._timerId = setInterval(this.timerRunning, 100);
+        }
         
         this.updateForm(action, payload)
     }
