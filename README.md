@@ -7,10 +7,13 @@ To show the countdown , click on control button in the token menu.
 
 You can choose the delta time of synchronization in the settings.
 
+![](doc/GM-Countdown "GM countdown")                                ![](doc/Player-Coundown.png "Player countdown")
+
 
 ### Features
 - Simple countdown
 - Regular synchronisation of the remaing time
+- Synchronisation button
 
 ### Compatibility:
 - Tested with FVTT v9 - v11.
