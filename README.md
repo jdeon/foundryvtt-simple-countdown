@@ -7,15 +7,11 @@ To show the countdown , click on control button in the token menu.
 
 You can choose the delta time of synchronization in the settings.
 
-![](doc/GM-Countdown.png)
+| ![](doc/GM-Countdown.png)  | ![](doc/Player-Coundown.png)  |
+|:---------------:|:---------------:|
+| *GM countdown* | *Player countdown* |
 
-*GM countdown*<br>
-<br>
-
-![](doc/Player-Coundown.png)
-
-*Player countdown*<br>
-<br>
+<br/>
 
 ### Features
 - Simple countdown
