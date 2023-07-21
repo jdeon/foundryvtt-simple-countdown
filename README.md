@@ -11,6 +11,7 @@ You can choose the delta time of synchronization in the settings.
 
 *GM countdown*
 
+
 ![](doc/Player-Coundown.png)
 
 *Player countdown*
