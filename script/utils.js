@@ -4,7 +4,9 @@ export class Utils {
 
     static s_EVENT_NAME = `module.${Utils.MODULE_NAME}`;
 
-    static timeInObj(seconds) {
+    static timeInObj(millis) {
+        let seconds = Math.floor(millis / 1000)
+
         let timeObject = {
              h : Math.floor(seconds / (60*60)),
              min : Math.floor((seconds/60) % 60),
@@ -13,13 +15,13 @@ export class Utils {
         return timeObject;
      }
      
-     static timeInSec(objTime = {}) {
+     static timeInMillis(objTime = {}) {
          let seconds = 0;
          seconds += objTime.h *60*60;
          seconds += objTime.min *60;
          seconds += objTime.sec *1;
          
-         return seconds;
+         return seconds * 1000;
      }
 
 }

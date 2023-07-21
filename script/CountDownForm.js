@@ -7,11 +7,13 @@ export class CountDownForm extends FormApplication {
     constructor(object = {}, options = {}) {
         super(object, options);
         this._play = false;
-        this._initCount = 0;
-        this._actualCount = 0;
+        this._initCount = 0;        //in ms
+        this._actualCount = 0;      //in ms
         this._timerId = null;
         this._action = null;
-        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
+        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+        this._lastUpdate = Date.now()
+        this._inputs = {}
     }
 
     static actions = {
@@ -23,7 +25,7 @@ export class CountDownForm extends FormApplication {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        options.title = "Countdown";
+        options.title = game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title"),
         options.template = "modules/simple-countdown/template/countdown_panel.html";
         options.height = "auto"
         options.resizable = false;
@@ -41,9 +43,9 @@ export class CountDownForm extends FormApplication {
             }
             
             displayMain = new CountDownForm({},{id : idCss});
-        }
 
-        displayMain.render(true, {});
+            displayMain.render(true, {});
+        }
 
         return displayMain;
     }
@@ -54,43 +56,64 @@ export class CountDownForm extends FormApplication {
 
     activateListeners(html) {
         //super.activateListeners(html);
+
+        this._initButton(html)
         
-        $(html)
-            .find("#countdown_btn_start")
-            .click(event => {
-                this._play = true;
-            
-                if(this._timerId == null){
-                    this.initCountDown();
-                    this._timerId = setInterval(this.timerRunning, 100);
-                    this._action = CountDownForm.actions.INIT;
-                } else {
-                    this._action = CountDownForm.actions.PLAY;
-                }
-            
-                this.save(true);
-            });
         
-        $(html)
-            .find("#countdown_btn_pause")
-            .click(event => {
-                this._play = false;
-                this._action = CountDownForm.actions.PAUSE;
-                this.save(true);
-            });
+        this._inputs.playButton.click(event => {
+            this._play = true;
         
-        $(html)
-            .find("#countdown_btn_reset")
-            .click(event => {
-                this.resetCountDown();
-                this.updateInput();
-                this._action = CountDownForm.actions.RESET;
-                this.save(true);
-            });
+            if(this._timerId == null){
+                this.initCountDown();
+                this._timerId = setInterval(this.timerRunning, 100);
+                this._action = CountDownForm.actions.INIT;
+            } else {
+                this._action = CountDownForm.actions.PLAY;
+            }
+
+            this._inputs.playButton.addClass('hidded')
+            this._inputs.pauseButton.removeClass('hidded')
+        
+            this.save(true);
+        });
+        
+        this._inputs.pauseButton.click(event => {
+            this._play = false;
+            this._action = CountDownForm.actions.PAUSE;
+
+            this._inputs.pauseButton.addClass('hidded')
+            this._inputs.playButton.removeClass('hidded')
+
+            this.save(true);
+        });
+        
+        this._inputs.resetButton.click(event => {
+            this.resetCountDown();
+            this.updateInput();
+            this._action = CountDownForm.actions.RESET;
+  
+            this._inputs.pauseButton.addClass('hidded')
+            this._inputs.playButton.removeClass('hidded')
+
+            this.save(true);
+        });
+
+        this._inputs.syncButton.click(event => {
+            this.save(false);
+            this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+        });
+
+        this._inputs.hoursField.change(event => {
+            console.log(event)
+        });
+
+        this._inputs.secondsField.change(event => {
+            console.log(event)
+        });
     }
         
     get title() {
-        return "Countdown";
+        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
     }
 
     /**
@@ -112,6 +135,17 @@ export class CountDownForm extends FormApplication {
         return super.close();
     }
 
+    _initButton(html){
+        this._inputs.playButton = $(html).find("#countdown_btn_start")
+        this._inputs.pauseButton = $(html).find("#countdown_btn_pause")
+        this._inputs.resetButton = $(html).find("#countdown_btn_reset")
+        this._inputs.syncButton = $(html).find("#countdown_btn_sync")
+
+        this._inputs.hoursField = $(html).find("#countdown_h_value")
+        this._inputs.minutesField = $(html).find("#countdown_min_value")
+        this._inputs.secondsField = $(html).find("#countdown_sec_value")
+    }
+
     
     updateForm(action, payload){
         this._action = action;
@@ -121,19 +155,26 @@ export class CountDownForm extends FormApplication {
         this._actualCount = payload.remaningCount;
     }
 
-    initPlay(action, payload){
+    play(action, payload, isInit){
         this._play = true;
-        if(null !== this._timerId){
+        if(isInit && null !== this._timerId){
             clearTimeout(this._timerId);
+            this._timerId = null;
         }
-        this._timerId = setInterval(this.timerRunning, 100);
+
+        if(this._timerId == null){
+            this._timerId = setInterval(this.timerRunning, 100);
+        }
         
         this.updateForm(action, payload)
     }
     
     timerRunning(){
+        const now = Date.now()
+        const deltatime = now - displayMain._lastUpdate;
+
         if(displayMain._play && !game.paused){
-            displayMain._actualCount -= .1;
+            displayMain._actualCount -= deltatime;
             
             if(displayMain._actualCount < 0){
                 displayMain.resetCountDown();
@@ -142,32 +183,35 @@ export class CountDownForm extends FormApplication {
             displayMain.updateInput();
 
             if(game.user.isGM){
-                displayMain._nextSync -= .1;
+                displayMain._nextSync -= deltatime;
                 if(displayMain._nextSync < 0){
                     displayMain.save(false)
-                    displayMain._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime");
+                    displayMain._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
                 }
             }
         }
+
+        displayMain._lastUpdate = now
     }
     
     updateInput(){
         let seconds = parseInt(this._actualCount)
         const objTimer = Utils.timeInObj(seconds);
-        document.getElementById("countdown_h_value").value = objTimer.h;
-        document.getElementById("countdown_min_value").value = objTimer.min;
-        document.getElementById("countdown_sec_value").value = objTimer.sec;
+        this._inputs.hoursField.val(objTimer.h);
+        this._inputs.minutesField.val(objTimer.min);
+        this._inputs.secondsField.val(objTimer.sec);
     }
     
     initCountDown(){
         const objTimer = {};
-        objTimer.h = document.getElementById("countdown_h_value").value;
-        objTimer.min = document.getElementById("countdown_min_value").value;
-        objTimer.sec = document.getElementById("countdown_sec_value").value;
+        objTimer.h = this._inputs.hoursField.val();
+        objTimer.min = this._inputs.minutesField.val();
+        objTimer.sec = this._inputs.secondsField.val();
         
-        let seconds = Utils.timeInSec(objTimer);
-        this._initCount = seconds;
-        this._actualCount = seconds;  
+        const millis = Utils.timeInMillis(objTimer);
+        this._initCount = millis;
+        this._actualCount = millis;
+        this._lastUpdate = Date.now()  
     }
     
     resetCountDown(){

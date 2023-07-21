@@ -3,25 +3,25 @@
        <table style="margin: auto">
             <tr>
                 <th> 
-                    <label for="countdown_h_value">H</label>
+                    <label for="countdown_h_value">{{localize 'SIMPLE-COUNTDOWN.Overlay.hourAbbr'}}</label>
                 </th>
                 
                 <th/>
     
                 <th>
-                    <label for="countdown_min_value">min</label>
+                    <label for="countdown_min_value">{{localize 'SIMPLE-COUNTDOWN.Overlay.minAbbr'}}</label>
                 </th>
                 
                 <th/>
                 
                 <th>
-                    <label for="countdown_sec_value">sec</label>
+                    <label for="countdown_sec_value">{{localize 'SIMPLE-COUNTDOWN.Overlay.secAbbr'}}</label>
                 </th>
             </tr>
 
             <tr>
                 <td> 
-                    <input id="countdown_h_value" type="number" size="2" min="0" max="24" style="width:25px;"
+                    <input id="countdown_h_value" type="number" size="2" min="0" max="24"
                         {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -29,7 +29,7 @@
                 <td>:</td>
        
                 <td>
-                    <input id="countdown_min_value" type="number" size="2" min="0" max="59" style="width:25px;"
+                    <input id="countdown_min_value" type="number" size="2" min="0" max="59"
                        {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -37,7 +37,7 @@
                 <td>:</td>
                 
                 <td>
-                    <input id="countdown_sec_value" type="number" size="2" min="0" max="59" style="width:25px;"
+                    <input id="countdown_sec_value" type="number" size="2" min="0" max="59"
                            {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -45,10 +45,11 @@
            </tr></table>
            
         {{#if isGM}}
-        <div id='countdown_controle' style="padding-top: 15px; padding-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; justify-items: center;">
+        <div id='countdown_controle'>
             <i id='countdown_btn_start' class="fas fa-play fa-xl"></i>
-            <i id='countdown_btn_pause' class="fas fa-pause fa-xl"></i>
+            <i id='countdown_btn_pause' class="fas fa-pause fa-xl hidded"></i>
             <i id='countdown_btn_reset' class="fas fa-stop fa-xl"></i>
+            <i id='countdown_btn_sync' class="fas fa-rotate fa-xl"></i>
         </div>
         {{/if}}
     </div>
