@@ -21,7 +21,7 @@
 
             <tr>
                 <td> 
-                    <input id="countdown_h_value" type="number" size="2" min="0" max="24" style="width:25px;"
+                    <input id="countdown_h_value" type="number" size="2" min="0" max="24"
                         {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -29,7 +29,7 @@
                 <td>:</td>
        
                 <td>
-                    <input id="countdown_min_value" type="number" size="2" min="0" max="59" style="width:25px;"
+                    <input id="countdown_min_value" type="number" size="2" min="0" max="59"
                        {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -37,7 +37,7 @@
                 <td>:</td>
                 
                 <td>
-                    <input id="countdown_sec_value" type="number" size="2" min="0" max="59" style="width:25px;"
+                    <input id="countdown_sec_value" type="number" size="2" min="0" max="59"
                            {{#unless isGM}} disabled=true {{/unless}}
                     />
                 </td>
@@ -45,7 +45,7 @@
            </tr></table>
            
         {{#if isGM}}
-        <div id='countdown_controle' style="padding-top: 15px; padding-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; justify-items: center;">
+        <div id='countdown_controle'>
             <i id='countdown_btn_start' class="fas fa-play fa-xl"></i>
             <i id='countdown_btn_pause' class="fas fa-pause fa-xl hidded"></i>
             <i id='countdown_btn_reset' class="fas fa-stop fa-xl"></i>

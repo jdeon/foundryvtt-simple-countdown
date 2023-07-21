@@ -11,3 +11,16 @@
 .hidded {
     display:none
 }
+
+#countdown_controle {
+    padding-top: 15px; 
+    padding-bottom: 15px; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    justify-items: center;
+}
+
+input[type="number"]{
+    width: 25px;
+    text-align: right;
+}
