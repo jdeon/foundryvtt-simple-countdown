@@ -45,6 +45,12 @@
            </tr></table>
            
         {{#if isGM}}
+        <nav id='countdown_visibility' align="center">
+            <a class="item" data-mode="none"><img src="icons/svg/invisible.svg"/></a>     
+            <a class="item" data-mode="limited"><img src="icons/svg/mystery-man.svg"/></a>
+            <a class="item active" data-mode="observer"><img src="icons/svg/eye.svg"/></a>
+        </nav>
+
         <div id='countdown_controle'>
             <i id='countdown_btn_start' class="fas fa-play fa-xl"></i>
             <i id='countdown_btn_pause' class="fas fa-pause fa-xl hidded"></i>

@@ -14,6 +14,7 @@ export class CountDownForm extends FormApplication {
         this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         this._lastUpdate = Date.now()
         this._inputs = {}
+        this._visibilityMode = 'observer'
     }
 
     static actions = {
@@ -58,6 +59,14 @@ export class CountDownForm extends FormApplication {
         //super.activateListeners(html);
 
         this._initButton(html)
+
+        $(html).find("#countdown_visibility .item").click(event => {
+            $(html).find("#countdown_visibility .item").removeClass('active')
+            
+            event.currentTarget.classList.add('active')
+
+            this._visibilityMode = event.currentTarget.dataset['mode']
+        })
         
         
         this._inputs.playButton.click(event => {
