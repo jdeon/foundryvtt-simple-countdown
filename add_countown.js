@@ -50,7 +50,7 @@ Hooks.once('ready', function () {
      {
         if (typeof data !== 'object') { return; }
   
-        if(game.user.isGM){ return; }
+        if(game.user.isGM || data.payload.visibilityMode === "none"){ return; }
   
         try
         {
