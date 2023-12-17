@@ -97,5 +97,5 @@ Hooks.once('ready', function () {
 
    if(formDisplay === undefined) {return ;}
 
-   formDisplay.pauseTimerRunning(paused)
+   formDisplay.pauseTimerRotating(paused)
   })
