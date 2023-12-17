@@ -158,7 +158,7 @@ export class CountDownForm extends FormApplication {
         this._inputs.minutesField = $(html).find("#countdown_min_value")
         this._inputs.secondsField = $(html).find("#countdown_sec_value")
 
-        this._timerRunning = $(html).find(".rotating-timer")
+        this._timerRotating = $(html).find(".rotating-timer")
     }
 
     
@@ -169,7 +169,7 @@ export class CountDownForm extends FormApplication {
         this._initCount = payload.initCount;
         this._actualCount = payload.remaningCount;
 
-        this.pauseTimerRunning(!this._play)
+        this.pauseTimerRotating(!this._play)
         
     }
 
@@ -255,17 +255,17 @@ export class CountDownForm extends FormApplication {
         }
     }
 
-    pauseTimerRunning(isPaused){
-        if(!this._timerRunning) return
+    pauseTimerRotating(isPaused){
+        if(!this._timerRotating) return
 
         if(isPaused){
-            if(this._timerRunning.hasClass('rotating-timer')){
-                this._timerRunning.addClass('rotating-timer-paused')
-                this._timerRunning.removeClass('rotating-timer')
+            if(this._timerRotating.hasClass('rotating-timer')){
+                this._timerRotating.addClass('rotating-timer-paused')
+                this._timerRotating.removeClass('rotating-timer')
             }
-        } else if(this._timerRunning.hasClass('rotating-timer-paused')){
-            this._timerRunning.addClass('rotating-timer')
-            this._timerRunning.removeClass('rotating-timer-paused')
+        } else if(this._timerRotating.hasClass('rotating-timer-paused')){
+            this._timerRotating.addClass('rotating-timer')
+            this._timerRotating.removeClass('rotating-timer-paused')
         }
     }
 }
