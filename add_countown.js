@@ -57,9 +57,9 @@ Hooks.once('ready', function () {
             let formDisplay
 
             if(data.payload.toShow) {
-                formDisplay = CountDownForm.showForm()
+                formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
              } else {
-                formDisplay = CountDownForm.getForm()
+                formDisplay = CountDownForm.getForm(data.payload.visibilityMode)
              }
 
              if(formDisplay === undefined) {return ;}

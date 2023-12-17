@@ -41,3 +41,18 @@ td{
     width: 30px;
     height:30px;
 }
+
+.rotating-timer {
+    animation: timer-rotation 5s infinite linear;
+    color: blue;
+    font-size: 50px;
+  }
+  
+  @keyframes timer-rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }

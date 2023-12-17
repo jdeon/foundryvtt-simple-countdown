@@ -1,5 +1,7 @@
 <div id="countdown_panel">
     <div>
+
+    {{#if showTimer}}
        <table style="margin: auto">
             <tr>
                 <th> 
@@ -43,6 +45,11 @@
                 </td>
        
            </tr></table>
+        {{else}}
+        <div align="center" style="padding:10px">
+            <i class="far fa-hourglass rotating-timer"></i>
+            </div>
+        {{/if}} 
            
         {{#if isGM}}
         <nav id='countdown_visibility' align="center">
