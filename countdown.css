@@ -56,3 +56,7 @@ td{
       transform: rotate(359deg);
     }
   }
+
+.rotating-timer-paused {
+    font-size: 50px;
+}

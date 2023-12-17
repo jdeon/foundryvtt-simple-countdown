@@ -59,7 +59,7 @@ Hooks.once('ready', function () {
             if(data.payload.toShow) {
                 formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
              } else {
-                formDisplay = CountDownForm.getForm(data.payload.visibilityMode)
+                formDisplay = CountDownForm.getForm()
              }
 
              if(formDisplay === undefined) {return ;}
@@ -91,3 +91,11 @@ Hooks.once('ready', function () {
         }
      });
   }
+
+  Hooks.on('pauseGame', (paused) => {
+   const formDisplay = CountDownForm.getForm()
+
+   if(formDisplay === undefined) {return ;}
+
+   formDisplay.pauseTimerRunning(paused)
+  })

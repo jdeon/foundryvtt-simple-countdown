@@ -157,6 +157,8 @@ export class CountDownForm extends FormApplication {
         this._inputs.hoursField = $(html).find("#countdown_h_value")
         this._inputs.minutesField = $(html).find("#countdown_min_value")
         this._inputs.secondsField = $(html).find("#countdown_sec_value")
+
+        this._timerRunning = $(html).find(".rotating-timer")
     }
 
     
@@ -166,6 +168,9 @@ export class CountDownForm extends FormApplication {
         this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
         this._initCount = payload.initCount;
         this._actualCount = payload.remaningCount;
+
+        this.pauseTimerRunning(!this._play)
+        
     }
 
     play(action, payload, isInit){
@@ -247,6 +252,20 @@ export class CountDownForm extends FormApplication {
                 type: this._action,
                 payload: data
             });
+        }
+    }
+
+    pauseTimerRunning(isPaused){
+        if(!this._timerRunning) return
+
+        if(isPaused){
+            if(this._timerRunning.hasClass('rotating-timer')){
+                this._timerRunning.addClass('rotating-timer-paused')
+                this._timerRunning.removeClass('rotating-timer')
+            }
+        } else if(this._timerRunning.hasClass('rotating-timer-paused')){
+            this._timerRunning.addClass('rotating-timer')
+            this._timerRunning.removeClass('rotating-timer-paused')
         }
     }
 }
