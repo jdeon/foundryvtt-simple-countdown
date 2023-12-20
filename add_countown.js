@@ -50,13 +50,21 @@ Hooks.once('ready', function () {
      {
         if (typeof data !== 'object') { return; }
   
-        if(game.user.isGM || data.payload.visibilityMode === "none"){ return; }
+        if(game.user.isGM ){ return; }
   
         try
         {
             let formDisplay
 
-            if(data.payload.toShow) {
+            if(data.payload.visibilityMode === "none"){
+               formDisplay = CountDownForm.getForm()
+
+               if(formDisplay !== undefined){
+                  formDisplay.close()
+                  formDisplay = undefined
+               }
+
+            } else if(data.payload.toShow) {
                 formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
              } else {
                 formDisplay = CountDownForm.getForm()
