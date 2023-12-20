@@ -29,6 +29,10 @@ td{
     text-align: center;
 }
 
+#countdown_visibility {
+    padding-top: 10px; 
+}
+
 #countdown_visibility .item.active img {
     color: #FFF;
     border: 1px solid red;
