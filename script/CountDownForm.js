@@ -69,6 +69,8 @@ export class CountDownForm extends FormApplication {
             event.currentTarget.classList.add('active')
 
             this._visibilityMode = event.currentTarget.dataset['mode']
+
+            this.save(true)
         })
         
         
