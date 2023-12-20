@@ -50,14 +50,22 @@ Hooks.once('ready', function () {
      {
         if (typeof data !== 'object') { return; }
   
-        if(game.user.isGM){ return; }
+        if(game.user.isGM ){ return; }
   
         try
         {
             let formDisplay
 
-            if(data.payload.toShow) {
-                formDisplay = CountDownForm.showForm()
+            if(data.payload.visibilityMode === "none"){
+               formDisplay = CountDownForm.getForm()
+
+               if(formDisplay !== undefined){
+                  formDisplay.close()
+                  formDisplay = undefined
+               }
+
+            } else if(data.payload.toShow) {
+                formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
              } else {
                 formDisplay = CountDownForm.getForm()
              }
@@ -91,3 +99,11 @@ Hooks.once('ready', function () {
         }
      });
   }
+
+  Hooks.on('pauseGame', (paused) => {
+   const formDisplay = CountDownForm.getForm()
+
+   if(formDisplay === undefined) {return ;}
+
+   formDisplay.pauseTimerRotating(paused)
+  })
