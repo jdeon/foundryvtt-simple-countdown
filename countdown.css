@@ -24,3 +24,43 @@ input[type="number"]{
     width: 25px;
     text-align: right;
 }
+
+td{
+    text-align: center;
+}
+
+#countdown_visibility {
+    padding-top: 10px; 
+}
+
+#countdown_visibility .item.active img {
+    color: #FFF;
+    border: 1px solid red;
+    border-bottom: none;
+    box-shadow: 0 0 6px inset #ff6400;
+    border-radius: 5px 5px 0 0;
+}
+
+#countdown_visibility .item img {
+    width: 30px;
+    height:30px;
+}
+
+.rotating-timer {
+    animation: timer-rotation 5s infinite linear;
+    color: blue;
+    font-size: 50px;
+  }
+  
+  @keyframes timer-rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }
+
+.rotating-timer-paused {
+    font-size: 50px;
+}

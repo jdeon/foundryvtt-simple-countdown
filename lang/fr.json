@@ -1,8 +1,11 @@
 {
-  "SIMPLE-COUNTDOWN.Overlay.Title": "Countdown",
+  "SIMPLE-COUNTDOWN.Overlay.Title": "Minuterie",
   "SIMPLE-COUNTDOWN.Overlay.secAbbr": "sec",
   "SIMPLE-COUNTDOWN.Overlay.minAbbr": "min",
   "SIMPLE-COUNTDOWN.Overlay.hourAbbr": "h",
+  "SIMPLE-COUNTDOWN.Overlay.visibility.none.title": "Ne pas afficher le minuteur aux joueurs",
+  "SIMPLE-COUNTDOWN.Overlay.visibility.limited.title": "Cacher le temp restant aux joueurs",
+  "SIMPLE-COUNTDOWN.Overlay.visibility.observer.title": "Tout afficher aux joueurs",
   "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.name": "Interval de synchronisation",
   "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Fréquence en secondes pour resynchroniser le temps restant avec les clients"
 }
