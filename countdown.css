@@ -30,7 +30,9 @@ td{
 }
 
 #countdown_visibility {
-    padding-top: 10px; 
+    display: flex;
+    justify-content: center; 
+    padding-top: 10px;
 }
 
 #countdown_visibility .item.active img {
@@ -38,7 +40,6 @@ td{
     border: 1px solid red;
     border-bottom: none;
     box-shadow: 0 0 6px inset #ff6400;
-    border-radius: 5px 5px 0 0;
 }
 
 #countdown_visibility .item img {
