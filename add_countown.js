@@ -13,14 +13,18 @@ Hooks.once('init', async function () {
     registerSettings();
 
     Hooks.on("getSceneControlButtons", (controls) => {
-      controls[0].tools.push({
-      name: 'simple-countdown',
-      title: 'Countdown',
-      icon: 'far fa-hourglass',
-      button: true,
-      onClick: () => CountDownForm.showForm(),
-      visible: game.user.isGM
-      })
+      const toolsNotesLength = Object.keys(controls.notes.tools).length
+
+      controls.notes.tools["simple-countdown"] = {
+        name: 'simple-countdown',
+        title: 'Countdown',
+        icon: 'far fa-hourglass',
+        button: true,
+        onClick: () => CountDownForm.showForm(),
+        visible: game.user.isGM,
+        order : toolsNotesLength + 1
+
+      }
   });
     
     return loadTemplates(['modules/simple-countdown/template/countdown_panel.html']);
