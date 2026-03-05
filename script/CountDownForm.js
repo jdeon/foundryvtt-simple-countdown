@@ -1,8 +1,9 @@
 import { Utils } from "./utils.js"
+const { ApplicationV2, HandlebarsApplicationMixin  } = foundry.applications.api
 
 let displayMain = null;
 
-export class CountDownForm extends FormApplication {
+export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
     constructor(object = {}, options = {}, visibilityMode) {
         super(object, options);
@@ -24,26 +25,33 @@ export class CountDownForm extends FormApplication {
         RESET : "RESET"
     }
 
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.title = game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title"),
-        options.template = "modules/simple-countdown/template/countdown_panel.html";
-        options.height = "auto"
-        options.resizable = false;
-        return options;
+    static DEFAULT_OPTIONS = {
+        id: "foo-form",
+        form: {
+            //handler: TemplateApplication.#onSubmit,
+            closeOnSubmit: true,
+        },
+        position: {
+            width: 200,
+            height: "auto",
+        },
+        tag: "form", // The default is "div"
+        window: {
+            icon: "fas fa-gear", // You can now add an icon to the header
+            title: "FOO.form.title",
+            resizable: false
+        }
+    }
+
+    static PARTS = {
+        foo: {
+            template: "./modules/simple-countdown/template/countdown_panel.hbs"
+        }
     }
     
     static showForm(visibilityMode) {
         if (!displayMain) {
-            let idCss;
-            
-            if (game.user.isGM){
-                idCss = 'countdown-form-GM';
-            } else {
-                idCss = 'countdown-form'
-            }
-            
-            displayMain = new CountDownForm({},{id : idCss}, visibilityMode);
+            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
 
             displayMain.render(true, {});
         } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
@@ -57,9 +65,23 @@ export class CountDownForm extends FormApplication {
     static getForm(){
         return displayMain;
     }
+        
+    get title() {
+        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
+    }
 
-    activateListeners(html) {
-        //super.activateListeners(html);
+    /**
+     * Provides data to the form, which then can be rendered using the handlebars templating engine
+     */
+    _prepareContext() {
+        return {
+            isGM: game.user.isGM,
+            showTimer: game.user.isGM || this._visibilityMode === 'observer'
+        };
+    }
+
+    _onRender(context, options) {
+        const html = $(this.element) //TODO avoid jquery if possible ->  this.element.querySelector("input[name=something]").addEventListener("click", /* ... */);
 
         this._initButton(html)
 
@@ -124,22 +146,6 @@ export class CountDownForm extends FormApplication {
         this._inputs.secondsField.change(event => {
             console.log(event)
         });
-    }
-        
-    get title() {
-        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
-    }
-
-    /**
-     * Provides data to the form, which then can be rendered using the handlebars templating engine
-     */
-    getData() {
-        
-        return {
-            isGM: game.user.isGM,
-            showTimer: game.user.isGM || this._visibilityMode === 'observer'
-        };
-        
     }
     
     close() {

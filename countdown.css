@@ -3,14 +3,19 @@
     font-size: 13px
 }
 
-#countdown-form-GM{
-	width: fit-content !important;
-    font-size: 13px
-}
-
 .hidded {
     display:none
 }
+
+
+#countdown_timer{
+    margin: auto
+}
+
+#countdown_timer th, td{
+    padding: 0.5rem 0;
+}
+
 
 #countdown_controle {
     padding-top: 15px; 
@@ -21,7 +26,7 @@
 }
 
 input[type="number"]{
-    width: 25px;
+    width: 2rem;
     text-align: right;
 }
 

@@ -27,7 +27,7 @@ Hooks.once('init', async function () {
       }
   });
     
-    return loadTemplates(['modules/simple-countdown/template/countdown_panel.html']);
+    return loadTemplates(['modules/simple-countdown/template/countdown_panel.hbs']);
     
 });
 
