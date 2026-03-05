@@ -37,8 +37,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         },
         tag: "form", // The default is "div"
         window: {
-            icon: "fas fa-gear", // You can now add an icon to the header
-            title: "FOO.form.title",
             resizable: false
         }
     }
