@@ -125,19 +125,16 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     _onRender(context, options) {
-        const html = $(this.element) //TODO avoid jquery if possible ->  this.element.querySelector("input[name=something]").addEventListener("click", /* ... */);
+        this._initButton()
 
-        this._initButton(html)
-
-        $(html).find("#countdown_visibility .item").click(event => {
-            $(html).find("#countdown_visibility .item").removeClass('active')
+        this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => item.addEventListener("click", event => {
+            this.element.querySelectorAll("#countdown_visibility .active").forEach((activeItem) => activeItem.classList.remove('active'))
             
             event.currentTarget.classList.add('active')
 
             this._visibilityMode = event.currentTarget.dataset['mode']
 
             this.save(true)
-        })
         
         this._inputs.hoursField.change(event => {
             console.log(event)
@@ -146,6 +143,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._inputs.secondsField.change(event => {
             console.log(event)
         });
+        }))
     }
     
     close() {
@@ -156,13 +154,13 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         return super.close();
     }
 
-    _initButton(html){
+    _initButton(){
         //TODO remove
-        this._inputs.hoursField = $(html).find("#countdown_h_value")
-        this._inputs.minutesField = $(html).find("#countdown_min_value")
-        this._inputs.secondsField = $(html).find("#countdown_sec_value")
+        this._inputs.hoursField = this.element.querySelector("#countdown_h_value")
+        this._inputs.minutesField = this.element.querySelector("#countdown_min_value")
+        this._inputs.secondsField = this.element.querySelector("#countdown_sec_value")
 
-        this._timerRotating = $(html).find(".rotating-timer")
+        this._timerRotating = this.element.querySelector(".rotating-timer")
     }
 
     
@@ -219,16 +217,16 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     updateInput(){
         let seconds = parseInt(this._actualCount)
         const objTimer = Utils.timeInObj(seconds);
-        this._inputs.hoursField.val(objTimer.h);
-        this._inputs.minutesField.val(objTimer.min);
-        this._inputs.secondsField.val(objTimer.sec);
+        this._inputs.hoursField.value = objTimer.h;
+        this._inputs.minutesField.value = objTimer.min;
+        this._inputs.secondsField.value = objTimer.sec;
     }
     
     initCountDown(){
         const objTimer = {};
-        objTimer.h = this._inputs.hoursField.val();
-        objTimer.min = this._inputs.minutesField.val();
-        objTimer.sec = this._inputs.secondsField.val();
+        objTimer.h = this._inputs.hoursField.value;
+        objTimer.min = this._inputs.minutesField.value;
+        objTimer.sec = this._inputs.secondsField.value;
         
         const millis = Utils.timeInMillis(objTimer);
         this._initCount = millis;
