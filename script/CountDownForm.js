@@ -135,14 +135,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this._visibilityMode = event.currentTarget.dataset['mode']
 
             this.save(true)
-        
-        this._inputs.hoursField.change(event => {
-            console.log(event)
-        });
-
-        this._inputs.secondsField.change(event => {
-            console.log(event)
-        });
         }))
     }
     
