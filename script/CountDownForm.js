@@ -26,7 +26,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static DEFAULT_OPTIONS = {
-        id: "foo-form",
+        id: "countdown-form",
         form: {
             //handler: TemplateApplication.#onSubmit,
             closeOnSubmit: true,
@@ -38,11 +38,17 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         tag: "form", // The default is "div"
         window: {
             resizable: false
+        },
+        actions: {
+            play: CountDownForm.PLAY,
+            pause: CountDownForm.PAUSE,
+            reset: CountDownForm.RESET,
+            sync: CountDownForm.SYNC
         }
     }
 
     static PARTS = {
-        foo: {
+        countdownPanel: {
             template: "./modules/simple-countdown/template/countdown_panel.hbs"
         }
     }
@@ -62,6 +68,49 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
     static getForm(){
         return displayMain;
+    }
+
+    static PLAY () {
+        this._play = true;
+        
+        if(this._timerId == null){
+            this.initCountDown();
+            this._timerId = setInterval(this.timerRunning, 100);
+            this._action = CountDownForm.actions.INIT;
+        } else {
+            this._action = CountDownForm.actions.PLAY;
+        }
+
+        this.element.querySelector("#countdown_btn_pause").classList.remove('hidded');
+        this.element.querySelector("#countdown_btn_play").classList.add('hidded');
+    
+        this.save(true);
+    }
+
+    static PAUSE () {
+        this._play = false;
+        this._action = CountDownForm.actions.PAUSE;
+
+        this.element.querySelector("#countdown_btn_pause").classList.add('hidded');
+        this.element.querySelector("#countdown_btn_play").classList.remove('hidded');
+
+        this.save(true);
+    }
+
+    static RESET () {
+        this.resetCountDown();
+        this.updateInput();
+        this._action = CountDownForm.actions.RESET;
+
+        this.element.querySelector("#countdown_btn_pause").classList.add('hidded');
+        this.element.querySelector("#countdown_btn_play").classList.remove('hidded');
+
+        this.save(true);
+    }
+
+    static SYNC () {
+        this.save(false);
+        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
     }
         
     get title() {
@@ -93,50 +142,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this.save(true)
         })
         
-        
-        this._inputs.playButton.click(event => {
-            this._play = true;
-        
-            if(this._timerId == null){
-                this.initCountDown();
-                this._timerId = setInterval(this.timerRunning, 100);
-                this._action = CountDownForm.actions.INIT;
-            } else {
-                this._action = CountDownForm.actions.PLAY;
-            }
-
-            this._inputs.playButton.addClass('hidded')
-            this._inputs.pauseButton.removeClass('hidded')
-        
-            this.save(true);
-        });
-        
-        this._inputs.pauseButton.click(event => {
-            this._play = false;
-            this._action = CountDownForm.actions.PAUSE;
-
-            this._inputs.pauseButton.addClass('hidded')
-            this._inputs.playButton.removeClass('hidded')
-
-            this.save(true);
-        });
-        
-        this._inputs.resetButton.click(event => {
-            this.resetCountDown();
-            this.updateInput();
-            this._action = CountDownForm.actions.RESET;
-  
-            this._inputs.pauseButton.addClass('hidded')
-            this._inputs.playButton.removeClass('hidded')
-
-            this.save(true);
-        });
-
-        this._inputs.syncButton.click(event => {
-            this.save(false);
-            this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
-        });
-
         this._inputs.hoursField.change(event => {
             console.log(event)
         });
