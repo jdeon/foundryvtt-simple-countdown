@@ -3,26 +3,12 @@
     font-size: 13px
 }
 
-.hidded {
-    display:none
-}
-
-
 #countdown_timer{
     margin: auto
 }
 
 #countdown_timer th, td{
     padding: 0.5rem 0;
-}
-
-
-#countdown_controle {
-    padding-top: 15px; 
-    padding-bottom: 15px; 
-    display: grid; 
-    grid-template-columns: 1fr 1fr 1fr; 
-    justify-items: center;
 }
 
 input[type="number"]{
@@ -50,6 +36,26 @@ td{
 #countdown_visibility .item img {
     width: 30px;
     height:30px;
+}
+
+#countdown_controle {
+    padding-top: 15px; 
+    padding-bottom: 15px; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    justify-items: center;
+}
+
+#countdown_btn_pause {
+    display: none;
+}
+
+.playing #countdown_btn_pause  {
+    display: block;
+}
+
+.playing #countdown_btn_start  {
+    display: none;
 }
 
 .rotating-timer {

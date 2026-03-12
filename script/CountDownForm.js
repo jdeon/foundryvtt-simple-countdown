@@ -81,8 +81,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this._action = CountDownForm.actions.PLAY;
         }
 
-        this.element.querySelector("#countdown_btn_pause").classList.remove('hidded');
-        this.element.querySelector("#countdown_btn_play").classList.add('hidded');
+        this.element.querySelector("#countdown_controle").classList.add("playing")
     
         this.save(true);
     }
@@ -91,8 +90,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._play = false;
         this._action = CountDownForm.actions.PAUSE;
 
-        this.element.querySelector("#countdown_btn_pause").classList.add('hidded');
-        this.element.querySelector("#countdown_btn_play").classList.remove('hidded');
+        this.element.querySelector("#countdown_controle").classList.remove("playing")
 
         this.save(true);
     }
@@ -102,8 +100,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this.updateInput();
         this._action = CountDownForm.actions.RESET;
 
-        this.element.querySelector("#countdown_btn_pause").classList.add('hidded');
-        this.element.querySelector("#countdown_btn_play").classList.remove('hidded');
+        this.element.querySelector("#countdown_controle").classList.add("playing")
 
         this.save(true);
     }
@@ -160,11 +157,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     _initButton(html){
-        this._inputs.playButton = $(html).find("#countdown_btn_start")
-        this._inputs.pauseButton = $(html).find("#countdown_btn_pause")
-        this._inputs.resetButton = $(html).find("#countdown_btn_reset")
-        this._inputs.syncButton = $(html).find("#countdown_btn_sync")
-
+        //TODO remove
         this._inputs.hoursField = $(html).find("#countdown_h_value")
         this._inputs.minutesField = $(html).find("#countdown_min_value")
         this._inputs.secondsField = $(html).find("#countdown_sec_value")
