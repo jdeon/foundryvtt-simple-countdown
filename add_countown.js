@@ -80,10 +80,10 @@ Hooks.once('ready', function () {
            switch (data.type)
            {
               case CountDownForm.actions.INIT: 
-                formDisplay.play(data.type, data.payload,true); 
+                formDisplay.runTimer(data.type, data.payload,true); 
                 break;
               case CountDownForm.actions.PLAY:
-               formDisplay.play(data.type, data.payload,false); 
+               formDisplay.runTimer(data.type, data.payload,false); 
                break;
               case CountDownForm.actions.PAUSE: 
                 formDisplay.updateForm(data.type, data.payload);

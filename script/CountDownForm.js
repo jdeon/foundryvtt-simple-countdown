@@ -18,13 +18,9 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._visibilityMode = visibilityMode ? visibilityMode : 'observer'
     }
 
-    static actions = {
-        INIT : "INIT",
-        PLAY : "PLAY",
-        PAUSE : "PAUSE",
-        RESET : "RESET"
-    }
-
+    /***********************************************************
+     *************** Needed by application v2 - BEGIN  *********
+     **********************************************************/
     static DEFAULT_OPTIONS = {
         id: "countdown-form",
         form: {
@@ -52,64 +48,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             template: "./modules/simple-countdown/template/countdown_panel.hbs"
         }
     }
-    
-    static showForm(visibilityMode) {
-        if (!displayMain) {
-            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
 
-            displayMain.render(true, {});
-        } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
-            displayMain._visibilityMode = visibilityMode
-            displayMain.render()
-        }
-
-        return displayMain;
-    }
-
-    static getForm(){
-        return displayMain;
-    }
-
-    static PLAY () {
-        this._play = true;
-        
-        if(this._timerId == null){
-            this.initCountDown();
-            this._timerId = setInterval(this.timerRunning, 100);
-            this._action = CountDownForm.actions.INIT;
-        } else {
-            this._action = CountDownForm.actions.PLAY;
-        }
-
-        this.element.querySelector("#countdown_controle").classList.add("playing")
-    
-        this.save(true);
-    }
-
-    static PAUSE () {
-        this._play = false;
-        this._action = CountDownForm.actions.PAUSE;
-
-        this.element.querySelector("#countdown_controle").classList.remove("playing")
-
-        this.save(true);
-    }
-
-    static RESET () {
-        this.resetCountDown();
-        this.updateInput();
-        this._action = CountDownForm.actions.RESET;
-
-        this.element.querySelector("#countdown_controle").classList.add("playing")
-
-        this.save(true);
-    }
-
-    static SYNC () {
-        this.save(false);
-        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
-    }
-        
     get title() {
         return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
     }
@@ -145,6 +84,73 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         displayMain = null;
         return super.close();
     }
+    /***********************************************************
+     *************** Needed by application v2 - END  *********
+     **********************************************************/
+
+    static actions = {
+        INIT : "INIT",
+        PLAY : "PLAY",
+        PAUSE : "PAUSE",
+        RESET : "RESET"
+    }
+    
+    static showForm(visibilityMode) {
+        if (!displayMain) {
+            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
+
+            displayMain.render(true, {});
+        } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
+            displayMain._visibilityMode = visibilityMode
+            displayMain.render()
+        }
+
+        return displayMain;
+    }
+
+    static getForm(){
+        return displayMain;
+    }
+
+    static PLAY () {
+        this._play = true;
+        
+        if(this._timerId == null){
+            this.initCountDown();
+            this._timerId = setInterval(this._timerInterval, 100);
+            this._action = CountDownForm.actions.INIT;
+        } else {
+            this._action = CountDownForm.actions.PLAY;
+        }
+
+        this.element.querySelector("#countdown_controle").classList.add("playing")
+    
+        this.save(true);
+    }
+
+    static PAUSE () {
+        this._play = false;
+        this._action = CountDownForm.actions.PAUSE;
+
+        this.element.querySelector("#countdown_controle").classList.remove("playing")
+
+        this.save(true);
+    }
+
+    static RESET () {
+        this.resetCountDown();
+        this.updateInput();
+        this._action = CountDownForm.actions.RESET;
+
+        this.element.querySelector("#countdown_controle").classList.add("playing")
+
+        this.save(true);
+    }
+
+    static SYNC () {
+        this.save(false);
+        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+    }
 
     _initButton(){
         //TODO remove
@@ -155,33 +161,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._timerRotating = this.element.querySelector(".rotating-timer")
     }
 
-    
-    updateForm(action, payload){
-        this._action = action;
-
-        this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
-        this._initCount = payload.initCount;
-        this._actualCount = payload.remaningCount;
-
-        this.pauseTimerRotating(!this._play)
-        
-    }
-
-    play(action, payload, isInit){
-        this._play = true;
-        if(isInit && null !== this._timerId){
-            clearTimeout(this._timerId);
-            this._timerId = null;
-        }
-
-        if(this._timerId == null){
-            this._timerId = setInterval(this.timerRunning, 100);
-        }
-        
-        this.updateForm(action, payload)
-    }
-    
-    timerRunning(){
+    _timerInterval(){
         const now = Date.now()
         const deltatime = now - displayMain._lastUpdate;
 
@@ -204,6 +184,35 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         }
 
         displayMain._lastUpdate = now
+    }
+    
+    updateForm(action, payload){
+        this._action = action;
+
+        this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
+        this._initCount = payload.initCount;
+        this._actualCount = payload.remaningCount;
+
+//TODO not work
+        if(this._play){
+            this.element.querySelector("#countdown_panel").classList.add("playing")
+        } else {
+            this.element.querySelector("#countdown_panel").classList.remove("playing")
+        }
+    }
+
+    runTimer(action, payload, isInit){
+        this._play = true;
+        if(isInit && null !== this._timerId){
+            clearTimeout(this._timerId);
+            this._timerId = null;
+        }
+
+        if(this._timerId === null){
+            this._timerId = setInterval(this._timerInterval, 100);
+        }
+        
+        this.updateForm(action, payload)
     }
     
     updateInput(){
@@ -246,20 +255,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
                 type: this._action,
                 payload: data
             });
-        }
-    }
-
-    pauseTimerRotating(isPaused){
-        if(!this._timerRotating) return
-
-        if(isPaused){
-            if(this._timerRotating.hasClass('rotating-timer')){
-                this._timerRotating.addClass('rotating-timer-paused')
-                this._timerRotating.removeClass('rotating-timer')
-            }
-        } else if(this._timerRotating.hasClass('rotating-timer-paused')){
-            this._timerRotating.addClass('rotating-timer')
-            this._timerRotating.removeClass('rotating-timer-paused')
         }
     }
 }
