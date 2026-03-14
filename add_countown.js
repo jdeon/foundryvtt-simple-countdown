@@ -50,7 +50,7 @@ Hooks.once('ready', function () {
   */
   function listen()
   {
-     game.socket.on(Utils.s_EVENT_NAME, (data) =>
+     game.socket.on(Utils.s_EVENT_NAME, async (data) =>
      {
         if (typeof data !== 'object') { return; }
   
@@ -69,7 +69,7 @@ Hooks.once('ready', function () {
                }
 
             } else if(data.payload.toShow) {
-                formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
+                formDisplay = await CountDownForm.showForm(data.payload.visibilityMode)
              } else {
                 formDisplay = CountDownForm.getForm()
              }

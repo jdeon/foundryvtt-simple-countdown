@@ -7,7 +7,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
     constructor(object = {}, options = {}, visibilityMode) {
         super(object, options);
-        this._play = false;
+        this._isPlaying = false;
         this._initCount = 0;        //in ms
         this._actualCount = 0;      //in ms
         this._timerId = null;
@@ -75,6 +75,10 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
             this.save(true)
         }))
+
+        if(this._isPlaying){
+            this.element.querySelector("#countdown_panel").classList.add("playing")
+        }
     }
     
     close() {
@@ -95,14 +99,14 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         RESET : "RESET"
     }
     
-    static showForm(visibilityMode) {
+    static async showForm(visibilityMode) {
         if (!displayMain) {
             displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
 
-            displayMain.render(true, {});
+            await displayMain.render(true, {});
         } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
             displayMain._visibilityMode = visibilityMode
-            displayMain.render()
+            await displayMain.render()
         }
 
         return displayMain;
@@ -113,26 +117,22 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static PLAY () {
-        this._play = true;
+        this._setIsPlaying(true);
         
         if(this._timerId == null){
-            this.initCountDown();
+            this._initCountDown();
             this._timerId = setInterval(this._timerInterval, 100);
             this._action = CountDownForm.actions.INIT;
         } else {
             this._action = CountDownForm.actions.PLAY;
         }
-
-        this.element.querySelector("#countdown_controle").classList.add("playing")
     
         this.save(true);
     }
 
     static PAUSE () {
-        this._play = false;
+        this._setIsPlaying(false);
         this._action = CountDownForm.actions.PAUSE;
-
-        this.element.querySelector("#countdown_controle").classList.remove("playing")
 
         this.save(true);
     }
@@ -141,8 +141,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this.resetCountDown();
         this.updateInput();
         this._action = CountDownForm.actions.RESET;
-
-        this.element.querySelector("#countdown_controle").classList.add("playing")
 
         this.save(true);
     }
@@ -153,19 +151,30 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     _initButton(){
-        //TODO remove
         this._inputs.hoursField = this.element.querySelector("#countdown_h_value")
         this._inputs.minutesField = this.element.querySelector("#countdown_min_value")
         this._inputs.secondsField = this.element.querySelector("#countdown_sec_value")
+    }
 
-        this._timerRotating = this.element.querySelector(".rotating-timer")
+    get title() {
+        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
+    }
+
+    _setIsPlaying(isPlaying){
+        this._isPlaying = isPlaying
+
+        if(isPlaying){
+            this.element.querySelector("#countdown_panel").classList.add("playing")
+        } else {
+            this.element.querySelector("#countdown_panel").classList.remove("playing")
+        }
     }
 
     _timerInterval(){
         const now = Date.now()
         const deltatime = now - displayMain._lastUpdate;
 
-        if(displayMain._play && !game.paused){
+        if(displayMain._isPlaying && !game.paused){
             displayMain._actualCount -= deltatime;
             
             if(displayMain._actualCount < 0){
@@ -189,20 +198,13 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     updateForm(action, payload){
         this._action = action;
 
-        this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
+        this._setIsPlaying(action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY);
         this._initCount = payload.initCount;
         this._actualCount = payload.remaningCount;
-
-//TODO not work
-        if(this._play){
-            this.element.querySelector("#countdown_panel").classList.add("playing")
-        } else {
-            this.element.querySelector("#countdown_panel").classList.remove("playing")
-        }
     }
 
     runTimer(action, payload, isInit){
-        this._play = true;
+        this._setIsPlaying(true);
         if(isInit && null !== this._timerId){
             clearTimeout(this._timerId);
             this._timerId = null;
@@ -218,16 +220,30 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     updateInput(){
         let seconds = parseInt(this._actualCount)
         const objTimer = Utils.timeInObj(seconds);
-        this._inputs.hoursField.value = objTimer.h;
-        this._inputs.minutesField.value = objTimer.min;
-        this._inputs.secondsField.value = objTimer.sec;
+
+        if(!this._inputs.hoursField){
+            this._initButton()
+        }
+
+        if(this._inputs.hoursField && this._inputs.minutesField && this._inputs.secondsField ){
+            this._inputs.hoursField.value = objTimer.h;
+            this._inputs.minutesField.value = objTimer.min;
+            this._inputs.secondsField.value = objTimer.sec;
+        }
     }
     
-    initCountDown(){
+    _initCountDown(){
         const objTimer = {};
-        objTimer.h = this._inputs.hoursField.value;
-        objTimer.min = this._inputs.minutesField.value;
-        objTimer.sec = this._inputs.secondsField.value;
+
+        if(!this._inputs.hoursField){
+            this._initButton()
+        }
+
+        if(this._inputs.hoursField && this._inputs.minutesField && this._inputs.secondsField ){
+            objTimer.h = this._inputs.hoursField.value;
+            objTimer.min = this._inputs.minutesField.value;
+            objTimer.sec = this._inputs.secondsField.value;
+        }
         
         const millis = Utils.timeInMillis(objTimer);
         this._initCount = millis;
@@ -236,7 +252,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
     
     resetCountDown(){
-        this._play = false;
+        this._setIsPlaying(false);
         this._actualCount = this._initCount;
         clearTimeout(this._timerId);
         this._timerId = null;
