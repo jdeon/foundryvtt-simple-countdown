@@ -3,13 +3,39 @@
     font-size: 13px
 }
 
-#countdown-form-GM{
-	width: fit-content !important;
-    font-size: 13px
+#countdown_timer{
+    margin: auto
 }
 
-.hidded {
-    display:none
+#countdown_timer th, td{
+    padding: 0.5rem 0;
+}
+
+input[type="number"]{
+    width: 2rem;
+    text-align: right;
+}
+
+td{
+    text-align: center;
+}
+
+#countdown_visibility {
+    display: flex;
+    justify-content: center; 
+    padding-top: 10px;
+}
+
+#countdown_visibility .item.active img {
+    color: #FFF;
+    border: 1px solid red;
+    border-bottom: none;
+    box-shadow: 0 0 6px inset #ff6400;
+}
+
+#countdown_visibility .item img {
+    width: 30px;
+    height:30px;
 }
 
 #countdown_controle {
@@ -20,36 +46,25 @@
     justify-items: center;
 }
 
-input[type="number"]{
-    width: 25px;
-    text-align: right;
+#countdown_btn_pause {
+    display: none;
 }
 
-td{
-    text-align: center;
+.playing #countdown_btn_pause  {
+    display: block;
 }
 
-#countdown_visibility {
-    padding-top: 10px; 
-}
-
-#countdown_visibility .item.active img {
-    color: #FFF;
-    border: 1px solid red;
-    border-bottom: none;
-    box-shadow: 0 0 6px inset #ff6400;
-    border-radius: 5px 5px 0 0;
-}
-
-#countdown_visibility .item img {
-    width: 30px;
-    height:30px;
+.playing #countdown_btn_start  {
+    display: none;
 }
 
 .rotating-timer {
+    font-size: 50px;
+}
+
+.playing .rotating-timer {
     animation: timer-rotation 5s infinite linear;
     color: blue;
-    font-size: 50px;
   }
   
   @keyframes timer-rotation {
@@ -61,6 +76,3 @@ td{
     }
   }
 
-.rotating-timer-paused {
-    font-size: 50px;
-}

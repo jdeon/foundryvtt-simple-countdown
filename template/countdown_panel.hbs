@@ -2,7 +2,7 @@
     <div>
 
     {{#if showTimer}}
-       <table style="margin: auto">
+       <table id="countdown_timer">
             <tr>
                 <th> 
                     <label for="countdown_h_value">{{localize 'SIMPLE-COUNTDOWN.Overlay.hourAbbr'}}</label>
@@ -59,10 +59,10 @@
         </nav>
         
         <div id='countdown_controle'>
-            <i id='countdown_btn_start' class="fas fa-play fa-xl"></i>
-            <i id='countdown_btn_pause' class="fas fa-pause fa-xl hidded"></i>
-            <i id='countdown_btn_reset' class="fas fa-stop fa-xl"></i>
-            <i id='countdown_btn_sync' class="fas fa-rotate fa-xl"></i>
+            <i id='countdown_btn_start' class="fas fa-play fa-xl" data-action="play"></i>
+            <i id='countdown_btn_pause' class="fas fa-pause fa-xl hidded" data-action="pause"></i>
+            <i id='countdown_btn_reset' class="fas fa-stop fa-xl" data-action="reset"></i>
+            <i id='countdown_btn_sync' class="fas fa-rotate fa-xl" data-action="sync"></i>
         </div>
         {{/if}}
     </div>

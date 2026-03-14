@@ -13,17 +13,21 @@ Hooks.once('init', async function () {
     registerSettings();
 
     Hooks.on("getSceneControlButtons", (controls) => {
-      controls[0].tools.push({
-      name: 'simple-countdown',
-      title: 'Countdown',
-      icon: 'far fa-hourglass',
-      button: true,
-      onClick: () => CountDownForm.showForm(),
-      visible: game.user.isGM
-      })
+      const toolsNotesLength = Object.keys(controls.notes.tools).length
+
+      controls.notes.tools["simple-countdown"] = {
+        name: 'simple-countdown',
+        title: 'Countdown',
+        icon: 'far fa-hourglass',
+        button: true,
+        onClick: () => CountDownForm.showForm(),
+        visible: game.user.isGM,
+        order : toolsNotesLength + 1
+
+      }
   });
     
-    return loadTemplates(['modules/simple-countdown/template/countdown_panel.html']);
+    return loadTemplates(['modules/simple-countdown/template/countdown_panel.hbs']);
     
 });
 
@@ -46,7 +50,7 @@ Hooks.once('ready', function () {
   */
   function listen()
   {
-     game.socket.on(Utils.s_EVENT_NAME, (data) =>
+     game.socket.on(Utils.s_EVENT_NAME, async (data) =>
      {
         if (typeof data !== 'object') { return; }
   
@@ -65,7 +69,7 @@ Hooks.once('ready', function () {
                }
 
             } else if(data.payload.toShow) {
-                formDisplay = CountDownForm.showForm(data.payload.visibilityMode)
+                formDisplay = await CountDownForm.showForm(data.payload.visibilityMode)
              } else {
                 formDisplay = CountDownForm.getForm()
              }
@@ -76,10 +80,10 @@ Hooks.once('ready', function () {
            switch (data.type)
            {
               case CountDownForm.actions.INIT: 
-                formDisplay.play(data.type, data.payload,true); 
+                formDisplay.runTimer(data.type, data.payload,true); 
                 break;
               case CountDownForm.actions.PLAY:
-               formDisplay.play(data.type, data.payload,false); 
+               formDisplay.runTimer(data.type, data.payload,false); 
                break;
               case CountDownForm.actions.PAUSE: 
                 formDisplay.updateForm(data.type, data.payload);
