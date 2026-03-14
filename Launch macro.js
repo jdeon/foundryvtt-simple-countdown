@@ -1,5 +1,5 @@
 let countdownOneMin = {
- _play : false,
+ _isPlaying : false,
  _initCount : 60,
  _timerId : null,
  _action  : 4};
