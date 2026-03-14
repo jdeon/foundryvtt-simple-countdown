@@ -59,9 +59,12 @@ td{
 }
 
 .rotating-timer {
+    font-size: 50px;
+}
+
+.playing .rotating-timer {
     animation: timer-rotation 5s infinite linear;
     color: blue;
-    font-size: 50px;
   }
   
   @keyframes timer-rotation {
@@ -73,6 +76,3 @@ td{
     }
   }
 
-.rotating-timer-paused {
-    font-size: 50px;
-}
