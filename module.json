@@ -14,7 +14,7 @@
 		}
 	  ],
 	"esmodules": [
-		"./add_countown.js"
+		"./main.js"
 	],
 	"languages": [
 		{
