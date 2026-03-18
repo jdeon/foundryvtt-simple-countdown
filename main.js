@@ -50,7 +50,7 @@ Hooks.once('ready', function () {
         {
             let formDisplay
 
-            if(data.payload.visibilityMode === "none"){
+            if(data.payload.visibilityMode === CountDownForm.VISIBILITY_MODE.NONE){
                formDisplay = CountDownForm.getForm()
 
                if(formDisplay !== undefined){

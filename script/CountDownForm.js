@@ -15,7 +15,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         this._lastUpdate = Date.now()
         this._inputs = {}
-        this._visibilityMode = visibilityMode ? visibilityMode : 'observer'
+        this._visibilityMode = visibilityMode ? visibilityMode : CountDownForm.VISIBILITY_MODE.OBSERVER
     }
 
     /***********************************************************
@@ -59,7 +59,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     _prepareContext() {
         return {
             isGM: game.user.isGM,
-            showTimer: game.user.isGM || this._visibilityMode === 'observer'
+            showTimer: game.user.isGM || this._visibilityMode === CountDownForm.VISIBILITY_MODE.OBSERVER
         };
     }
 
@@ -97,6 +97,12 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         PLAY : "PLAY",
         PAUSE : "PAUSE",
         RESET : "RESET"
+    }
+
+    static VISIBILITY_MODE = {
+        NONE : "none",
+        LIMITED : "limited",
+        OBSERVER : "observer"
     }
     
     static async showForm(visibilityMode) {
