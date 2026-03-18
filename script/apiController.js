@@ -6,7 +6,7 @@ export function initApi () {
 		init: ( seconds, visibilityMode) => {
 			if (!game.user.isGM) return
 
-			CountDownForm.showForm().then(( form ) => {
+			return CountDownForm.showForm(visibilityMode).then(( form ) => {
 				form._initCount = seconds * 1000;
 				form._actualCount = seconds * 1000;
 				form.updateInput();
@@ -16,23 +16,25 @@ export function initApi () {
 		start: ( seconds, visibilityMode) => {
 			if (!game.user.isGM) return
 
-			CountDownForm.showForm().then(( form ) => {
-				form._initCount = seconds * 1000;
-				form._actualCount = seconds * 1000;
-				form.updateInput();
-				CountDownForm.PLAY.call(form);
+			return CountDownForm.showForm(visibilityMode).then(( form ) => {
+				if( seconds ) {
+					form._initCount = seconds * 1000;
+					form._actualCount = seconds * 1000;
+					form.updateInput();
+				}
+				return CountDownForm.PLAY();
 			});
 
 		},
 		pause: () => {
 			if (!game.user.isGM) return
 
-			CountDownForm.PAUSE.call(form);
+			return CountDownForm.PAUSE();
 		},
 		reset: () => {
 			if (!game.user.isGM) return
 
-			CountDownForm.RESET.call(form);
+			return CountDownForm.RESET();
 		},
 		close: () => {
 			const form = CountDownForm.getForm();

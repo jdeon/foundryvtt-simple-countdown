@@ -116,38 +116,43 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         return displayMain;
     }
 
-    static PLAY () {
-        this._setIsPlaying(true);
+    static async PLAY () {
+        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        form._setIsPlaying(true);
         
-        if(this._timerId == null){
-            this._initCountDown();
-            this._timerId = setInterval(this._timerInterval, 100);
-            this._action = CountDownForm.actions.INIT;
+        if(form._timerId == null){
+            form._initCountDown();
+            form._timerId = setInterval(form._timerInterval, 100);
+            form._action = CountDownForm.actions.INIT;
         } else {
-            this._action = CountDownForm.actions.PLAY;
+            form._action = CountDownForm.actions.PLAY;
         }
     
         this.save(true);
+        form.save(true);
     }
 
-    static PAUSE () {
-        this._setIsPlaying(false);
-        this._action = CountDownForm.actions.PAUSE;
-
-        this.save(true);
+    static async PAUSE () {
+        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        form._setIsPlaying(false);
+        form._action = CountDownForm.actions.PAUSE;
+        form.updateInput()
+        form.save(true);
     }
 
-    static RESET () {
-        this.resetCountDown();
-        this.updateInput();
-        this._action = CountDownForm.actions.RESET;
+    static async RESET () {
+        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        form.resetCountDown();
+        form.updateInput();
+        form._action = CountDownForm.actions.RESET;
 
-        this.save(true);
+        form.save(true);
     }
 
-    static SYNC () {
-        this.save(false);
-        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+    static async SYNC () {
+        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        form.save(false);
+        form._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
     }
 
     _initButton(){
