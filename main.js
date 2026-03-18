@@ -2,6 +2,7 @@ import { CountDownForm } from "./script/CountDownForm.js";
 import { registerSettings } from "./script/settings.js";
 import { Utils } from "./script/utils.js";
 import { addMenuButton } from "./script/uiController.js"
+import { initApi } from "./script/apiController.js"
 
 
 /* ------------------------------------ */
@@ -13,7 +14,8 @@ Hooks.once('init', async function () {
     // Register custom module settings
     registerSettings();
 
-    addMenuButton()
+    addMenuButton();
+    initApi();
     
     return loadTemplates(['modules/simple-countdown/template/countdown_panel.hbs']);
     
