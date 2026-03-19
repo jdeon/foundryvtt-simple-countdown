@@ -240,6 +240,14 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this._inputs.secondsField.value = objTimer.sec;
         }
     }
+
+    updateVisibilityModeHighlight(visibilityMode){
+        this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => {
+            if(item.dataset['mode'] === visibilityMode){
+                item.classList.add('active')
+            } else {
+                item.classList.remove('active')
+            }
         })
     }
     
