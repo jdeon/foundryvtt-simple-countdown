@@ -3,27 +3,24 @@ import { CountDownForm } from "./CountDownForm.js";
 
 export function initApi () {
 	game.modules.get(Utils.MODULE_NAME).api = {
-		init: ( seconds, visibilityMode) => {
+		init: async ( seconds, isPlaying, visibilityMode) => {
 			if (!game.user.isGM) return
 
-			return CountDownForm.showForm(visibilityMode).then(( form ) => {
-				form._initCount = seconds * 1000;
-				form._actualCount = seconds * 1000;
-				form.updateInput();
-			});
-
+			const form = await  CountDownForm.showForm(visibilityMode)
+			form._initCount = seconds * 1000;
+			form._actualCount = seconds * 1000;
+			form.updateInput();
+			if(isPlaying){
+				await CountDownForm.PLAY();
+			} else {
+				await CountDownForm.PAUSE();
+			}
+			
 		},
-		start: ( seconds, visibilityMode) => {
+		start: () => {
 			if (!game.user.isGM) return
 
-			return CountDownForm.showForm(visibilityMode).then(( form ) => {
-				if( seconds ) {
-					form._initCount = seconds * 1000;
-					form._actualCount = seconds * 1000;
-					form.updateInput();
-				}
-				return CountDownForm.PLAY();
-			});
+			return CountDownForm.PLAY();
 
 		},
 		pause: () => {
