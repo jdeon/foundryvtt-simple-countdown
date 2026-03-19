@@ -1,4 +1,5 @@
 import { Utils } from "./utils.js"
+import { ACTIONS, VISIBILITY_MODE } from "./models.js"
 const { ApplicationV2, HandlebarsApplicationMixin  } = foundry.applications.api
 
 let displayMain = null;
@@ -15,7 +16,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         this._lastUpdate = Date.now()
         this._inputs = {}
-        this._visibilityMode = visibilityMode ? visibilityMode : CountDownForm.VISIBILITY_MODE.OBSERVER
+        this._visibilityMode = visibilityMode ? visibilityMode : VISIBILITY_MODE.OBSERVER
     }
 
     /***********************************************************
@@ -59,7 +60,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     _prepareContext() {
         return {
             isGM: game.user.isGM,
-            showTimer: game.user.isGM || this._visibilityMode === CountDownForm.VISIBILITY_MODE.OBSERVER
+            showTimer: game.user.isGM || this._visibilityMode === VISIBILITY_MODE.OBSERVER
         };
     }
 
@@ -89,19 +90,6 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     /***********************************************************
      *************** Needed by application v2 - END  *********
      **********************************************************/
-
-    static actions = {
-        INIT : "INIT",
-        PLAY : "PLAY",
-        PAUSE : "PAUSE",
-        RESET : "RESET"
-    }
-
-    static VISIBILITY_MODE = {
-        NONE : "none",
-        LIMITED : "limited",
-        OBSERVER : "observer"
-    }
     
     static async showForm(visibilityMode) {
         if (!displayMain) {
@@ -121,15 +109,15 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static async PLAY () {
-        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
         form._setIsPlaying(true);
         
         if(form._timerId == null){
             form._initCountDown();
             form._timerId = setInterval(form._timerInterval, 100);
-            form._action = CountDownForm.actions.INIT;
+            form._action = ACTIONS.INIT;
         } else {
-            form._action = CountDownForm.actions.PLAY;
+            form._action = ACTIONS.PLAY;
         }
     
         this.save(true);
@@ -137,24 +125,24 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static async PAUSE () {
-        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
         form._setIsPlaying(false);
-        form._action = CountDownForm.actions.PAUSE;
+        form._action = ACTIONS.PAUSE;
         form.updateInput()
         form.save(true);
     }
 
     static async RESET () {
-        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
         form.resetCountDown();
         form.updateInput();
-        form._action = CountDownForm.actions.RESET;
+        form._action = ACTIONS.RESET;
 
         form.save(true);
     }
 
     static async SYNC () {
-        const form = await CountDownForm.showForm(CountDownForm.VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
         form.save(false);
         form._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
     }
@@ -207,7 +195,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     updateForm(action, payload){
         this._action = action;
 
-        this._setIsPlaying(action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY);
+        this._setIsPlaying(action === ACTIONS.INIT  || action === ACTIONS.PLAY);
         this._initCount = payload.initCount;
         this._actualCount = payload.remaningCount;
     }

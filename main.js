@@ -3,6 +3,7 @@ import { registerSettings } from "./script/settings.js";
 import { Utils } from "./script/utils.js";
 import { addMenuButton } from "./script/uiController.js"
 import { initApi } from "./script/apiController.js"
+import { ACTIONS, VISIBILITY_MODE } from "./script/models.js"
 
 
 /* ------------------------------------ */
@@ -50,7 +51,7 @@ Hooks.once('ready', function () {
         {
             let formDisplay
 
-            if(data.payload.visibilityMode === CountDownForm.VISIBILITY_MODE.NONE){
+            if(data.payload.visibilityMode === VISIBILITY_MODE.NONE){
                formDisplay = CountDownForm.getForm()
 
                if(formDisplay !== undefined){
@@ -69,17 +70,17 @@ Hooks.once('ready', function () {
            // Dispatch the incoming message data by the message type.
            switch (data.type)
            {
-              case CountDownForm.actions.INIT: 
+              case ACTIONS.INIT: 
                 formDisplay.runTimer(data.type, data.payload,true); 
                 break;
-              case CountDownForm.actions.PLAY:
+              case ACTIONS.PLAY:
                formDisplay.runTimer(data.type, data.payload,false); 
                break;
-              case CountDownForm.actions.PAUSE: 
+              case ACTIONS.PAUSE: 
                 formDisplay.updateForm(data.type, data.payload);
                 formDisplay.updateInput();
                 break;
-              case CountDownForm.actions.RESET: 
+              case ACTIONS.RESET: 
                 formDisplay.updateForm(data.type, data.payload); 
                 formDisplay.resetCountDown();
                 formDisplay.updateInput();
