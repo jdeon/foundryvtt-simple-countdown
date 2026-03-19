@@ -66,6 +66,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
     _onRender(context, options) {
         this._initButton()
+        this.updateVisibilityModeHighlight(this._visibilityMode)
 
         this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => item.addEventListener("click", event => {
             this._visibilityMode = event.currentTarget.dataset['mode'];
@@ -93,7 +94,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     
     static async showForm(visibilityMode) {
         if (!displayMain) {
-            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
+            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode ?? VISIBILITY_MODE.OBSERVER);
 
             await displayMain.render(true, {});
         } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
@@ -109,7 +110,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static async PLAY () {
-        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm()
         form._setIsPlaying(true);
         
         if(form._timerId == null){
@@ -120,12 +121,11 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             form._action = ACTIONS.PLAY;
         }
     
-        this.save(true);
         form.save(true);
     }
 
     static async PAUSE () {
-        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm()
         form._setIsPlaying(false);
         form._action = ACTIONS.PAUSE;
         form.updateInput()
@@ -133,7 +133,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static async RESET () {
-        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm()
         form.resetCountDown();
         form.updateInput();
         form._action = ACTIONS.RESET;
@@ -142,7 +142,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     }
 
     static async SYNC () {
-        const form = await CountDownForm.showForm(VISIBILITY_MODE.OBSERVER)
+        const form = await CountDownForm.showForm()
         form.save(false);
         form._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
     }
