@@ -39,11 +39,13 @@ export function initApi () {
 				form.close();
 			}
 		},
-		updateVisibilityMode: (newVisibilityMode) => {
+		updateVisibilityMode: async (newVisibilityMode) => {
 			if (!game.user.isGM) return
 
-			this._visibilityMode = newVisibilityMode
-            this.save(true)
+			const form = await CountDownForm.showForm(newVisibilityMode)
+			form.updateVisibilityModeHighlight(newVisibilityMode)
+			form.updateInput();
+            form.save(true)
 		}
 	}
 }

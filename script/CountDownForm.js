@@ -67,11 +67,9 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._initButton()
 
         this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => item.addEventListener("click", event => {
-            this.element.querySelectorAll("#countdown_visibility .active").forEach((activeItem) => activeItem.classList.remove('active'))
-            
-            event.currentTarget.classList.add('active')
+            this._visibilityMode = event.currentTarget.dataset['mode'];
 
-            this._visibilityMode = event.currentTarget.dataset['mode']
+            this.updateVisibilityModeHighlight(this._visibilityMode)
 
             this.save(true)
         }))
@@ -241,6 +239,8 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this._inputs.minutesField.value = objTimer.min;
             this._inputs.secondsField.value = objTimer.sec;
         }
+    }
+        })
     }
     
     _initCountDown(){
