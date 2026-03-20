@@ -28,6 +28,19 @@
 			"path": "lang/fr.json"
 		}
 	],
+	"packs": [
+		{
+			"name": "simple-countdown",
+			"label": "Simple countdown",
+			"path": "packs/simple-countdown-macros",
+			"type": "Macro",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
+		}
+	],
     "styles": [
 		"./countdown.css"
 	],
