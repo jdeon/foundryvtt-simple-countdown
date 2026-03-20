@@ -86,7 +86,6 @@ Hooks.once('ready', function () {
                 formDisplay.updateInput();
                 break;
            }
-
         }
         catch (err)
         {
