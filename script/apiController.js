@@ -1,5 +1,6 @@
 import { Utils } from "./utils.js";
 import { CountDownForm } from "./CountDownForm.js";   
+import { VISIBILITY_MODE } from "./models.js"
 
 export function initApi () {
 	game.modules.get(Utils.MODULE_NAME).api = {
@@ -34,8 +35,12 @@ export function initApi () {
 			return CountDownForm.RESET();
 		},
 		close: () => {
+			if (!game.user.isGM) return
+
 			const form = CountDownForm.getForm();
 			if(form){
+				form._visibilityMode = VISIBILITY_MODE.NONE
+            	form.save(true)
 				form.close();
 			}
 		},
