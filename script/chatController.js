@@ -11,7 +11,7 @@ export function initChatController() {
     ChatLog.MESSAGE_PATTERNS["invalid"] = invalid
 
     //Chat message hooks
-    Hooks.on("chatMessage", async function (chatlog, message, chatData) {
+    Hooks.on("chatMessage", function (chatlog, message, chatData) {
         if (!message.startsWith('/scd') || !game.user.isGM) return;
 
         let messageArgs = message.split(' ')
@@ -44,15 +44,16 @@ export function initChatController() {
             }
         }
 
-        const form = await  CountDownForm.showForm(visibilityMode)
-        form._initCount = seconds * 1000;
-        form._actualCount = seconds * 1000;
-        form.updateInput();
-        if(isPlaying){
-            await CountDownForm.PLAY();
-        } else {
-            await CountDownForm.PAUSE();
-        }
+        CountDownForm.showForm(visibilityMode).then((form) => {
+            form._initCount = seconds * 1000;
+            form._actualCount = seconds * 1000;
+            form.updateInput();
+            if(isPlaying){
+                CountDownForm.PLAY().then();
+            } else {
+                CountDownForm.PAUSE().then();
+            }
+        })
 
         return false;
     })
