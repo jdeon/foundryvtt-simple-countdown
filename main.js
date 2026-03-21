@@ -1,6 +1,9 @@
 import { CountDownForm } from "./script/CountDownForm.js";
 import { registerSettings } from "./script/settings.js";
 import { Utils } from "./script/utils.js";
+import { addMenuButton } from "./script/uiController.js"
+import { initApi } from "./script/apiController.js"
+import { ACTIONS, VISIBILITY_MODE } from "./script/models.js"
 
 
 /* ------------------------------------ */
@@ -12,20 +15,8 @@ Hooks.once('init', async function () {
     // Register custom module settings
     registerSettings();
 
-    Hooks.on("getSceneControlButtons", (controls) => {
-      const toolsNotesLength = Object.keys(controls.notes.tools).length
-
-      controls.notes.tools["simple-countdown"] = {
-        name: 'simple-countdown',
-        title: 'Countdown',
-        icon: 'far fa-hourglass',
-        button: true,
-        onClick: () => CountDownForm.showForm(),
-        visible: game.user.isGM,
-        order : toolsNotesLength + 1
-
-      }
-  });
+    addMenuButton();
+    initApi();
     
     return loadTemplates(['modules/simple-countdown/template/countdown_panel.hbs']);
     
@@ -60,7 +51,7 @@ Hooks.once('ready', function () {
         {
             let formDisplay
 
-            if(data.payload.visibilityMode === "none"){
+            if(data.payload.visibilityMode === VISIBILITY_MODE.NONE){
                formDisplay = CountDownForm.getForm()
 
                if(formDisplay !== undefined){
@@ -79,23 +70,22 @@ Hooks.once('ready', function () {
            // Dispatch the incoming message data by the message type.
            switch (data.type)
            {
-              case CountDownForm.actions.INIT: 
+              case ACTIONS.INIT: 
                 formDisplay.runTimer(data.type, data.payload,true); 
                 break;
-              case CountDownForm.actions.PLAY:
+              case ACTIONS.PLAY:
                formDisplay.runTimer(data.type, data.payload,false); 
                break;
-              case CountDownForm.actions.PAUSE: 
+              case ACTIONS.PAUSE: 
                 formDisplay.updateForm(data.type, data.payload);
                 formDisplay.updateInput();
                 break;
-              case CountDownForm.actions.RESET: 
+              case ACTIONS.RESET: 
                 formDisplay.updateForm(data.type, data.payload); 
                 formDisplay.resetCountDown();
                 formDisplay.updateInput();
                 break;
            }
-
         }
         catch (err)
         {
@@ -108,6 +98,4 @@ Hooks.once('ready', function () {
    const formDisplay = CountDownForm.getForm()
 
    if(formDisplay === undefined) {return ;}
-
-   formDisplay.pauseTimerRotating(paused)
   })

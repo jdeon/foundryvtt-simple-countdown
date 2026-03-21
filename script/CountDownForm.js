@@ -1,4 +1,5 @@
 import { Utils } from "./utils.js"
+import { ACTIONS, VISIBILITY_MODE } from "./models.js"
 const { ApplicationV2, HandlebarsApplicationMixin  } = foundry.applications.api
 
 let displayMain = null;
@@ -15,7 +16,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         this._lastUpdate = Date.now()
         this._inputs = {}
-        this._visibilityMode = visibilityMode ? visibilityMode : 'observer'
+        this._visibilityMode = visibilityMode ? visibilityMode : VISIBILITY_MODE.OBSERVER
     }
 
     /***********************************************************
@@ -59,19 +60,18 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     _prepareContext() {
         return {
             isGM: game.user.isGM,
-            showTimer: game.user.isGM || this._visibilityMode === 'observer'
+            showTimer: game.user.isGM || this._visibilityMode === VISIBILITY_MODE.OBSERVER
         };
     }
 
     _onRender(context, options) {
         this._initButton()
+        this.updateVisibilityModeHighlight(this._visibilityMode)
 
         this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => item.addEventListener("click", event => {
-            this.element.querySelectorAll("#countdown_visibility .active").forEach((activeItem) => activeItem.classList.remove('active'))
-            
-            event.currentTarget.classList.add('active')
+            this._visibilityMode = event.currentTarget.dataset['mode'];
 
-            this._visibilityMode = event.currentTarget.dataset['mode']
+            this.updateVisibilityModeHighlight(this._visibilityMode)
 
             this.save(true)
         }))
@@ -91,17 +91,10 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     /***********************************************************
      *************** Needed by application v2 - END  *********
      **********************************************************/
-
-    static actions = {
-        INIT : "INIT",
-        PLAY : "PLAY",
-        PAUSE : "PAUSE",
-        RESET : "RESET"
-    }
     
     static async showForm(visibilityMode) {
         if (!displayMain) {
-            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode);
+            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode ?? VISIBILITY_MODE.OBSERVER);
 
             await displayMain.render(true, {});
         } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
@@ -116,38 +109,42 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
         return displayMain;
     }
 
-    static PLAY () {
-        this._setIsPlaying(true);
+    static async PLAY () {
+        const form = await CountDownForm.showForm()
+        form._setIsPlaying(true);
         
-        if(this._timerId == null){
-            this._initCountDown();
-            this._timerId = setInterval(this._timerInterval, 100);
-            this._action = CountDownForm.actions.INIT;
+        if(form._timerId == null){
+            form._initCountDown();
+            form._timerId = setInterval(form._timerInterval, 100);
+            form._action = ACTIONS.INIT;
         } else {
-            this._action = CountDownForm.actions.PLAY;
+            form._action = ACTIONS.PLAY;
         }
     
-        this.save(true);
+        form.save(true);
     }
 
-    static PAUSE () {
-        this._setIsPlaying(false);
-        this._action = CountDownForm.actions.PAUSE;
-
-        this.save(true);
+    static async PAUSE () {
+        const form = await CountDownForm.showForm()
+        form._setIsPlaying(false);
+        form._action = ACTIONS.PAUSE;
+        form.updateInput()
+        form.save(true);
     }
 
-    static RESET () {
-        this.resetCountDown();
-        this.updateInput();
-        this._action = CountDownForm.actions.RESET;
+    static async RESET () {
+        const form = await CountDownForm.showForm()
+        form.resetCountDown();
+        form.updateInput();
+        form._action = ACTIONS.RESET;
 
-        this.save(true);
+        form.save(true);
     }
 
-    static SYNC () {
-        this.save(false);
-        this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+    static async SYNC () {
+        const form = await CountDownForm.showForm()
+        form.save(false);
+        form._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
     }
 
     _initButton(){
@@ -198,7 +195,7 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
     updateForm(action, payload){
         this._action = action;
 
-        this._setIsPlaying(action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY);
+        this._setIsPlaying(action === ACTIONS.INIT  || action === ACTIONS.PLAY);
         this._initCount = payload.initCount;
         this._actualCount = payload.remaningCount;
     }
@@ -230,6 +227,16 @@ export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
             this._inputs.minutesField.value = objTimer.min;
             this._inputs.secondsField.value = objTimer.sec;
         }
+    }
+
+    updateVisibilityModeHighlight(visibilityMode){
+        this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => {
+            if(item.dataset['mode'] === visibilityMode){
+                item.classList.add('active')
+            } else {
+                item.classList.remove('active')
+            }
+        })
     }
     
     _initCountDown(){

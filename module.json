@@ -14,7 +14,7 @@
 		}
 	  ],
 	"esmodules": [
-		"./add_countown.js"
+		"./main.js"
 	],
 	"languages": [
 		{
@@ -26,6 +26,19 @@
 			"lang": "fr",
 			"name": "Français",
 			"path": "lang/fr.json"
+		}
+	],
+	"packs": [
+		{
+			"name": "simple-countdown",
+			"label": "Simple countdown",
+			"path": "packs/simple-countdown-macros",
+			"type": "Macro",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		}
 	],
     "styles": [
