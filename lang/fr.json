@@ -7,5 +7,6 @@
   "SIMPLE-COUNTDOWN.Overlay.visibility.limited.title": "Cacher le temp restant aux joueurs",
   "SIMPLE-COUNTDOWN.Overlay.visibility.observer.title": "Tout afficher aux joueurs",
   "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.name": "Interval de synchronisation",
-  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Fréquence en secondes pour resynchroniser le temps restant avec les clients"
+  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Fréquence en secondes pour resynchroniser le temps restant avec les clients",
+  "SIMPLE-COUNTDOWN.Chat-Command.Unrecognized": "Commande simple countdown du chat non reconnue, utilisez /scd init"
 }

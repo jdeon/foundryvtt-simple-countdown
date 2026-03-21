@@ -7,5 +7,6 @@
   "SIMPLE-COUNTDOWN.Overlay.visibility.limited.title": "Hide remaining time to players",
   "SIMPLE-COUNTDOWN.Overlay.visibility.observer.title": "Show all to players",
   "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.name": "Synchronization deltatime",
-  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Interval in seconds where the remaining time is synchronize with the clients"
+  "SIMPLE-COUNTDOWN.Settings.SyncDeltaTime.hint": "Interval in seconds where the remaining time is synchronize with the clients",
+  "SIMPLE-COUNTDOWN.Chat-Command.Unrecognized": "Simple countdown chat command not recognized. Use /countdown init."
 }
