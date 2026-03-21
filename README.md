@@ -41,5 +41,14 @@ All these methods can also be called with the module's API `game.modules.get("si
 
 The module give example for each methods with macros
 
+## Chat commands
+The countdown can alse be initialize with the chat command  `/scd init`
+This command should be followed by a number representing the seconds of the countdown.
+It could contain the option : 
+- `--play` to play the countdown at start.
+- `--visibility-mode` or `-vm` to choose the visibility mode of the generated countdown.
+
+Example :`/scd init 500 --play -vm none`
+
 ## Compatibility:
 - Tested with FVTT v9 - v11.

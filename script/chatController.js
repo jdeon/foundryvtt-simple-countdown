@@ -35,7 +35,7 @@ export function initChatController() {
             if(isNaN(messageArgs[i])){
                 if( messageArgs[i] === "--play" ){
                     isPlaying = true
-                } else if (messageArgs[i] === "--visibilityMode" || messageArgs[i] === "-vm"){
+                } else if (messageArgs[i] === "--visibility-mode" || messageArgs[i] === "-vm"){
                     i++
                     visibilityMode = messageArgs[i]
                 }
