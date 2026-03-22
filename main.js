@@ -3,6 +3,7 @@ import { registerSettings } from "./script/settings.js";
 import { Utils } from "./script/utils.js";
 import { addMenuButton } from "./script/uiController.js"
 import { initApi } from "./script/apiController.js"
+import { initChatController } from "./script/chatController.js"
 import { ACTIONS, VISIBILITY_MODE } from "./script/models.js"
 
 
@@ -17,6 +18,7 @@ Hooks.once('init', async function () {
 
     addMenuButton();
     initApi();
+    initChatController();
     
     return loadTemplates(['modules/simple-countdown/template/countdown_panel.hbs']);
     
