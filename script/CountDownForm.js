@@ -1,12 +1,14 @@
 import { Utils } from "./utils.js"
+import { ACTIONS, VISIBILITY_MODE } from "./models.js"
+const { ApplicationV2, HandlebarsApplicationMixin  } = foundry.applications.api
 
 let displayMain = null;
 
-export class CountDownForm extends FormApplication {
+export class CountDownForm extends HandlebarsApplicationMixin (ApplicationV2) {
 
     constructor(object = {}, options = {}, visibilityMode) {
         super(object, options);
-        this._play = false;
+        this._isPlaying = false;
         this._initCount = 0;        //in ms
         this._actualCount = 0;      //in ms
         this._timerId = null;
@@ -14,118 +16,40 @@ export class CountDownForm extends FormApplication {
         this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
         this._lastUpdate = Date.now()
         this._inputs = {}
-        this._visibilityMode = visibilityMode ? visibilityMode : 'observer'
+        this._visibilityMode = visibilityMode ? visibilityMode : VISIBILITY_MODE.OBSERVER
     }
 
-    static actions = {
-        INIT : "INIT",
-        PLAY : "PLAY",
-        PAUSE : "PAUSE",
-        RESET : "RESET"
-    }
-
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.title = game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title"),
-        options.template = "modules/simple-countdown/template/countdown_panel.html";
-        options.height = "auto"
-        options.resizable = false;
-        return options;
-    }
-    
-    static showForm(visibilityMode) {
-        if (!displayMain) {
-            let idCss;
-            
-            if (game.user.isGM){
-                idCss = 'countdown-form-GM';
-            } else {
-                idCss = 'countdown-form'
-            }
-            
-            displayMain = new CountDownForm({},{id : idCss}, visibilityMode);
-
-            displayMain.render(true, {});
-        } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
-            displayMain._visibilityMode = visibilityMode
-            displayMain.render()
+    /***********************************************************
+     *************** Needed by application v2 - BEGIN  *********
+     **********************************************************/
+    static DEFAULT_OPTIONS = {
+        id: "countdown-form",
+        form: {
+            //handler: TemplateApplication.#onSubmit,
+            closeOnSubmit: true,
+        },
+        position: {
+            width: 200,
+            height: "auto",
+        },
+        tag: "form", // The default is "div"
+        window: {
+            resizable: false
+        },
+        actions: {
+            play: CountDownForm.PLAY,
+            pause: CountDownForm.PAUSE,
+            reset: CountDownForm.RESET,
+            sync: CountDownForm.SYNC
         }
-
-        return displayMain;
     }
 
-    static getForm(){
-        return displayMain;
+    static PARTS = {
+        countdownPanel: {
+            template: "./modules/simple-countdown/template/countdown_panel.hbs"
+        }
     }
 
-    activateListeners(html) {
-        //super.activateListeners(html);
-
-        this._initButton(html)
-
-        $(html).find("#countdown_visibility .item").click(event => {
-            $(html).find("#countdown_visibility .item").removeClass('active')
-            
-            event.currentTarget.classList.add('active')
-
-            this._visibilityMode = event.currentTarget.dataset['mode']
-
-            this.save(true)
-        })
-        
-        
-        this._inputs.playButton.click(event => {
-            this._play = true;
-        
-            if(this._timerId == null){
-                this.initCountDown();
-                this._timerId = setInterval(this.timerRunning, 100);
-                this._action = CountDownForm.actions.INIT;
-            } else {
-                this._action = CountDownForm.actions.PLAY;
-            }
-
-            this._inputs.playButton.addClass('hidded')
-            this._inputs.pauseButton.removeClass('hidded')
-        
-            this.save(true);
-        });
-        
-        this._inputs.pauseButton.click(event => {
-            this._play = false;
-            this._action = CountDownForm.actions.PAUSE;
-
-            this._inputs.pauseButton.addClass('hidded')
-            this._inputs.playButton.removeClass('hidded')
-
-            this.save(true);
-        });
-        
-        this._inputs.resetButton.click(event => {
-            this.resetCountDown();
-            this.updateInput();
-            this._action = CountDownForm.actions.RESET;
-  
-            this._inputs.pauseButton.addClass('hidded')
-            this._inputs.playButton.removeClass('hidded')
-
-            this.save(true);
-        });
-
-        this._inputs.syncButton.click(event => {
-            this.save(false);
-            this._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
-        });
-
-        this._inputs.hoursField.change(event => {
-            console.log(event)
-        });
-
-        this._inputs.secondsField.change(event => {
-            console.log(event)
-        });
-    }
-        
     get title() {
         return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
     }
@@ -133,13 +57,28 @@ export class CountDownForm extends FormApplication {
     /**
      * Provides data to the form, which then can be rendered using the handlebars templating engine
      */
-    getData() {
-        
+    _prepareContext() {
         return {
             isGM: game.user.isGM,
-            showTimer: game.user.isGM || this._visibilityMode === 'observer'
+            showTimer: game.user.isGM || this._visibilityMode === VISIBILITY_MODE.OBSERVER
         };
-        
+    }
+
+    _onRender(context, options) {
+        this._initButton()
+        this.updateVisibilityModeHighlight(this._visibilityMode)
+
+        this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => item.addEventListener("click", event => {
+            this._visibilityMode = event.currentTarget.dataset['mode'];
+
+            this.updateVisibilityModeHighlight(this._visibilityMode)
+
+            this.save(true)
+        }))
+
+        if(this._isPlaying){
+            this.element.querySelector("#countdown_panel").classList.add("playing")
+        }
     }
     
     close() {
@@ -149,51 +88,90 @@ export class CountDownForm extends FormApplication {
         displayMain = null;
         return super.close();
     }
-
-    _initButton(html){
-        this._inputs.playButton = $(html).find("#countdown_btn_start")
-        this._inputs.pauseButton = $(html).find("#countdown_btn_pause")
-        this._inputs.resetButton = $(html).find("#countdown_btn_reset")
-        this._inputs.syncButton = $(html).find("#countdown_btn_sync")
-
-        this._inputs.hoursField = $(html).find("#countdown_h_value")
-        this._inputs.minutesField = $(html).find("#countdown_min_value")
-        this._inputs.secondsField = $(html).find("#countdown_sec_value")
-
-        this._timerRotating = $(html).find(".rotating-timer")
-    }
-
+    /***********************************************************
+     *************** Needed by application v2 - END  *********
+     **********************************************************/
     
-    updateForm(action, payload){
-        this._action = action;
+    static async showForm(visibilityMode) {
+        if (!displayMain) {
+            displayMain = new CountDownForm({},{id : 'countdown-form'}, visibilityMode ?? VISIBILITY_MODE.OBSERVER);
 
-        this._play = action === CountDownForm.actions.INIT  || action === CountDownForm.actions.PLAY;
-        this._initCount = payload.initCount;
-        this._actualCount = payload.remaningCount;
-
-        this.pauseTimerRotating(!this._play)
-        
-    }
-
-    play(action, payload, isInit){
-        this._play = true;
-        if(isInit && null !== this._timerId){
-            clearTimeout(this._timerId);
-            this._timerId = null;
+            await displayMain.render(true, {});
+        } else if(visibilityMode !== undefined && visibilityMode !== displayMain._visibilityMode){
+            displayMain._visibilityMode = visibilityMode
+            await displayMain.render()
         }
 
-        if(this._timerId == null){
-            this._timerId = setInterval(this.timerRunning, 100);
-        }
-        
-        this.updateForm(action, payload)
+        return displayMain;
     }
+
+    static getForm(){
+        return displayMain;
+    }
+
+    static async PLAY () {
+        const form = await CountDownForm.showForm()
+        form._setIsPlaying(true);
+        
+        if(form._timerId == null){
+            form._initCountDown();
+            form._timerId = setInterval(form._timerInterval, 100);
+            form._action = ACTIONS.INIT;
+        } else {
+            form._action = ACTIONS.PLAY;
+        }
     
-    timerRunning(){
+        form.save(true);
+    }
+
+    static async PAUSE () {
+        const form = await CountDownForm.showForm()
+        form._setIsPlaying(false);
+        form._action = ACTIONS.PAUSE;
+        form.updateInput()
+        form.save(true);
+    }
+
+    static async RESET () {
+        const form = await CountDownForm.showForm()
+        form.resetCountDown();
+        form.updateInput();
+        form._action = ACTIONS.RESET;
+
+        form.save(true);
+    }
+
+    static async SYNC () {
+        const form = await CountDownForm.showForm()
+        form.save(false);
+        form._nextSync = game.settings.get(Utils.MODULE_NAME, "sync-deltatime") * 1000;
+    }
+
+    _initButton(){
+        this._inputs.hoursField = this.element.querySelector("#countdown_h_value")
+        this._inputs.minutesField = this.element.querySelector("#countdown_min_value")
+        this._inputs.secondsField = this.element.querySelector("#countdown_sec_value")
+    }
+
+    get title() {
+        return game.i18n.localize("SIMPLE-COUNTDOWN.Overlay.Title");
+    }
+
+    _setIsPlaying(isPlaying){
+        this._isPlaying = isPlaying
+
+        if(isPlaying){
+            this.element.querySelector("#countdown_panel").classList.add("playing")
+        } else {
+            this.element.querySelector("#countdown_panel").classList.remove("playing")
+        }
+    }
+
+    _timerInterval(){
         const now = Date.now()
         const deltatime = now - displayMain._lastUpdate;
 
-        if(displayMain._play && !game.paused){
+        if(displayMain._isPlaying && !game.paused){
             displayMain._actualCount -= deltatime;
             
             if(displayMain._actualCount < 0){
@@ -214,19 +192,65 @@ export class CountDownForm extends FormApplication {
         displayMain._lastUpdate = now
     }
     
+    updateForm(action, payload){
+        this._action = action;
+
+        this._setIsPlaying(action === ACTIONS.INIT  || action === ACTIONS.PLAY);
+        this._initCount = payload.initCount;
+        this._actualCount = payload.remaningCount;
+    }
+
+    runTimer(action, payload, isInit){
+        this._setIsPlaying(true);
+        if(isInit && null !== this._timerId){
+            clearTimeout(this._timerId);
+            this._timerId = null;
+        }
+
+        if(this._timerId === null){
+            this._timerId = setInterval(this._timerInterval, 100);
+        }
+        
+        this.updateForm(action, payload)
+    }
+    
     updateInput(){
         let seconds = parseInt(this._actualCount)
         const objTimer = Utils.timeInObj(seconds);
-        this._inputs.hoursField.val(objTimer.h);
-        this._inputs.minutesField.val(objTimer.min);
-        this._inputs.secondsField.val(objTimer.sec);
+
+        if(!this._inputs.hoursField){
+            this._initButton()
+        }
+
+        if(this._inputs.hoursField && this._inputs.minutesField && this._inputs.secondsField ){
+            this._inputs.hoursField.value = objTimer.h;
+            this._inputs.minutesField.value = objTimer.min;
+            this._inputs.secondsField.value = objTimer.sec;
+        }
+    }
+
+    updateVisibilityModeHighlight(visibilityMode){
+        this.element.querySelectorAll("#countdown_visibility .item").forEach((item) => {
+            if(item.dataset['mode'] === visibilityMode){
+                item.classList.add('active')
+            } else {
+                item.classList.remove('active')
+            }
+        })
     }
     
-    initCountDown(){
+    _initCountDown(){
         const objTimer = {};
-        objTimer.h = this._inputs.hoursField.val();
-        objTimer.min = this._inputs.minutesField.val();
-        objTimer.sec = this._inputs.secondsField.val();
+
+        if(!this._inputs.hoursField){
+            this._initButton()
+        }
+
+        if(this._inputs.hoursField && this._inputs.minutesField && this._inputs.secondsField ){
+            objTimer.h = this._inputs.hoursField.value;
+            objTimer.min = this._inputs.minutesField.value;
+            objTimer.sec = this._inputs.secondsField.value;
+        }
         
         const millis = Utils.timeInMillis(objTimer);
         this._initCount = millis;
@@ -235,7 +259,7 @@ export class CountDownForm extends FormApplication {
     }
     
     resetCountDown(){
-        this._play = false;
+        this._setIsPlaying(false);
         this._actualCount = this._initCount;
         clearTimeout(this._timerId);
         this._timerId = null;
@@ -254,20 +278,6 @@ export class CountDownForm extends FormApplication {
                 type: this._action,
                 payload: data
             });
-        }
-    }
-
-    pauseTimerRotating(isPaused){
-        if(!this._timerRotating) return
-
-        if(isPaused){
-            if(this._timerRotating.hasClass('rotating-timer')){
-                this._timerRotating.addClass('rotating-timer-paused')
-                this._timerRotating.removeClass('rotating-timer')
-            }
-        } else if(this._timerRotating.hasClass('rotating-timer-paused')){
-            this._timerRotating.addClass('rotating-timer')
-            this._timerRotating.removeClass('rotating-timer-paused')
         }
     }
 }
