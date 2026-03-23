@@ -49,6 +49,3 @@ It could contain the option :
 - `--visibility-mode` or `-vm` to choose the visibility mode of the generated countdown.
 
 Example :`/scd init 500 --play -vm none`
-
-## Compatibility:
-- Tested with FVTT v9 - v11.
